@@ -1,0 +1,53 @@
+import Image from 'next/image';
+import styles from './Header.module.css';
+import logoIcon from '@/assets/images/logo.svg';
+import profileIcon from '@/assets/images/profile.png';
+import smartPhoneIcon from '@/assets/images/smart-phone.svg';
+
+const Header = () => {
+  return (
+    <header className={[styles.header, 'wrapper'].join(' ')}>
+      <div className={styles.inner_wrapper}>
+        <nav className={styles.navbar}>
+          <Image src={logoIcon.src} width={150} height={40} alt="logo" />
+
+          <div className={styles.navbar_buttons}>
+            <button>Создать меню</button>
+            <button className={styles.navbar_buttons_profile}>
+              Войти
+              <Image src={profileIcon.src} width={20} height={20} alt="profile" />
+            </button>
+          </div>
+        </nav>
+
+        <div className={styles.content}>
+          <div className={styles.content_block}>
+            <h1 className={styles.content_title}>
+              СОЗДАЙТЕ ЛИЧНОЕ
+              <br />
+              <strong>QR МЕНЮ</strong>
+            </h1>
+
+            <p className={styles.content_description}>
+              С нами вы можете быстро создать интерактивное QR-меню для своего заведения С нами вы можете быстро создать
+              интерактивное QR-меню для своего заведения
+            </p>
+
+            <button className="button-orange">Создать меню</button>
+          </div>
+
+          <Image
+            className={styles.content_smart_phone}
+            src={smartPhoneIcon.src}
+            width={468}
+            height={550}
+            quality={100}
+            alt="smart-phone"
+          />
+        </div>
+      </div>
+    </header>
+  );
+};
+
+export default Header;
