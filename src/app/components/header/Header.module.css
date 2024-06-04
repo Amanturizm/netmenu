@@ -13,7 +13,7 @@
 
   color: #ffffff;
 
-  padding: 45px 100px;
+  padding: 45px 100px 140px;
 }
 
 .navbar {
@@ -53,7 +53,6 @@
   margin-top: 106px;
   width: 100%;
   position: relative;
-  margin-bottom: 140px;
 }
 
 .content_block {
@@ -77,7 +76,6 @@
 
 .content_description {
   font-family: var(--font-family-medium);
-
   font-size: 20px;
   line-height: 30px;
 }

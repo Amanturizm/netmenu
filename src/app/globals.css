@@ -34,6 +34,7 @@ html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
+  background-color: #eaeaea;
 }
 
 img {
@@ -64,4 +65,5 @@ button {
 
 .wrapper {
   padding: 60px 128px;
+  border-radius: 0 0 32px 32px;
 }

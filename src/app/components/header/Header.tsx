@@ -10,7 +10,6 @@ const Header = () => {
       <div className={styles.inner_wrapper}>
         <nav className={styles.navbar}>
           <Image src={logoIcon.src} width={150} height={40} alt="logo" />
-
           <div className={styles.navbar_buttons}>
             <button>Создать меню</button>
             <button className={styles.navbar_buttons_profile}>

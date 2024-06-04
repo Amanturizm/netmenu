@@ -1,0 +1,59 @@
+.section_one {
+  border-radius: 64px;
+  background-color: #fff;
+  padding: 155px 100px;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.section_one_info {
+  max-width: 426px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.section_one_title {
+  font-family: var(--font-family-bold);
+  font-size: 36px;
+  font-weight: 600;
+  line-height: 54px;
+}
+
+.section_one_description {
+  font-family: var(--font-family-medium);
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 30px;
+}
+
+.section_one_smart_phone {
+  position: absolute;
+  right: 146px;
+  bottom: 0;
+  width: 315px;
+  height: 550px;
+}
+
+.section_one_smart_phone_money_01,
+.section_one_smart_phone_money_02,
+.section_one_smart_phone_money_03 {
+  position: absolute;
+  object-fit: cover;
+}
+
+.section_one_smart_phone_money_01 {
+  top: -38px;
+  left: -2px;
+}
+
+.section_one_smart_phone_money_02 {
+  top: -40px;
+  right: -63px;
+}
+
+.section_one_smart_phone_money_03 {
+  right: -60px;
+  bottom: 82px;
+}
