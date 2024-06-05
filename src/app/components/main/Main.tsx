@@ -1,10 +1,10 @@
 import Image from 'next/image';
+import { Montserrat } from 'next/font/google';
 import styles from './Main.module.css';
 import smartPhoneIcon from '@/assets/images/smart-phone-02.svg';
 import smartPhoneMoneyIcon01 from '@/assets/images/smart-phone-icon-01.svg';
 import smartPhoneMoneyIcon02 from '@/assets/images/smart-phone-icon-02.svg';
 import smartPhoneMoneyIcon03 from '@/assets/images/smart-phone-icon-03.svg';
-import { Montserrat } from 'next/font/google';
 
 const montserrat = Montserrat({ weight: ['400'], style: 'normal', subsets: ['latin'] });
 
@@ -51,6 +51,7 @@ const Main = () => {
             />
           </div>
         </div>
+
         <div className={styles.section_one_bottom_item}></div>
       </section>
 
@@ -59,6 +60,7 @@ const Main = () => {
           <h1>Удобство</h1>
           <p>Работать с QR меню проще. Загружается меню быстрее. Полезной информации в меню больше.</p>
         </div>
+
         <div className={styles.section_two_block}>
           <h1>Безопасность</h1>
           <p>
@@ -66,6 +68,7 @@ const Main = () => {
             заведения
           </p>
         </div>
+
         <div className={styles.section_two_block}>
           <h1>Экономичность</h1>
           <p>

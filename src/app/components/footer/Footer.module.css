@@ -1,0 +1,45 @@
+.footer {
+  background-color: #272423;
+  padding: 4vw 16vw 1.5vw;
+  color: #fff;
+}
+
+.footer_content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  font-family: 'Montserrat Medium';
+  font-weight: 500;
+}
+
+.footer_contacts {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: .9vw;
+
+  font-weight: 500;
+}
+
+.footer_contacts span {
+  font-size: 1.4vw;
+  color: #ffa050;
+}
+
+.footer_contacts p {
+  font-size: 1.6vw;
+}
+
+.footer_info {
+  margin-top: 4vw;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5vw;
+}
+
+.footer_info p {
+  font-family: 'Montserrat Medium';
+  font-size: 1.1vw;
+  text-align: center;
+}
