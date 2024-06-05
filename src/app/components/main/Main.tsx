@@ -8,7 +8,7 @@ import smartPhoneMoneyIcon03 from '@/assets/images/smart-phone-icon-03.svg';
 const Main = () => {
   return (
     <main>
-      <section className={'wrapper'}>
+      <section className="wrapper">
         <div className={styles.section_one}>
           <div className={styles.section_one_info}>
             <h1 className={styles.section_one_title}>
@@ -47,6 +47,28 @@ const Main = () => {
               alt="smart-phone-icon"
             />
           </div>
+        </div>
+        <div className={styles.section_one_bottom_item}></div>
+      </section>
+
+      <section className={'wrapper' + ' ' + styles.section_two}>
+        <div className={styles.section_two_block}>
+          <h1>Удобство</h1>
+          <p>Работать с QR меню проще. Загружается меню быстрее. Полезной информации в меню больше.</p>
+        </div>
+        <div className={styles.section_two_block}>
+          <h1>Безопасность</h1>
+          <p>
+            QR меню позволяет избежать физического контакта с бумажными меню и повышает уровень гигиены для посетителей
+            заведения
+          </p>
+        </div>
+        <div className={styles.section_two_block}>
+          <h1>Экономичность</h1>
+          <p>
+            QR меню помогает сократить расходы на печать и обновление бумажных меню, что благоприятно сказывается на
+            окружающей среде.
+          </p>
         </div>
       </section>
     </main>

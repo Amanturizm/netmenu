@@ -66,4 +66,5 @@ button {
 .wrapper {
   padding: 60px 128px;
   border-radius: 0 0 32px 32px;
+  position: relative;
 }
