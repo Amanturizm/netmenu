@@ -4,6 +4,9 @@ import smartPhoneIcon from '@/assets/images/smart-phone-02.svg';
 import smartPhoneMoneyIcon01 from '@/assets/images/smart-phone-icon-01.svg';
 import smartPhoneMoneyIcon02 from '@/assets/images/smart-phone-icon-02.svg';
 import smartPhoneMoneyIcon03 from '@/assets/images/smart-phone-icon-03.svg';
+import { Montserrat } from 'next/font/google';
+
+const montserrat = Montserrat({ weight: ['400'], style: 'normal', subsets: ['latin'] });
 
 const Main = () => {
   return (
@@ -51,7 +54,7 @@ const Main = () => {
         <div className={styles.section_one_bottom_item}></div>
       </section>
 
-      <section className={'wrapper' + ' ' + styles.section_two}>
+      <section className={['wrapper', styles.section_two].join(' ')}>
         <div className={styles.section_two_block}>
           <h1>Удобство</h1>
           <p>Работать с QR меню проще. Загружается меню быстрее. Полезной информации в меню больше.</p>
@@ -69,6 +72,67 @@ const Main = () => {
             QR меню помогает сократить расходы на печать и обновление бумажных меню, что благоприятно сказывается на
             окружающей среде.
           </p>
+        </div>
+      </section>
+
+      <section className={['wrapper', styles.section_three].join(' ')}>
+        <h1>
+          <strong>ЛУЧШИЕ</strong>
+          <br />
+          предложения
+        </h1>
+
+        <div className={styles.section_three_blocks}>
+          <div className={styles.section_three_block}>
+            <div>
+              <h1>
+                QR MENU
+                <br />
+                BASIC
+              </h1>
+              <h2>1 МЕСЯЦ</h2>
+            </div>
+
+            <div>
+              <p className={montserrat.className}>9900 ₽</p>
+              <button className="button-orange">Купить</button>
+              <p>оплата производится за месяц, общая cтоимость равнается</p>
+            </div>
+          </div>
+
+          <div className={styles.section_three_block}>
+            <div>
+              <h1>
+                QR MENU
+                <br />
+                SUPER
+              </h1>
+              <h2>3 МЕСЯЦА</h2>
+            </div>
+
+            <div>
+              <p className={montserrat.className}>9900 ₽</p>
+              <button className="button-orange">Купить</button>
+              <p>оплата производится за месяц, общая cтоимость равнается</p>
+            </div>
+          </div>
+
+          <div className={styles.section_three_block}>
+            <div>
+              <h1>
+                QR MENU
+                <br />
+                ULTRA
+              </h1>
+              <h2>6 МЕСЯЦЕВ</h2>
+            </div>
+
+            <div>
+              <p className={montserrat.className}>9900 ₽</p>
+              <button className="button-orange">Купить</button>
+              <p>оплата производится за месяц, общая cтоимость равнается</p>
+            </div>
+          </div>
         </div>
       </section>
     </main>

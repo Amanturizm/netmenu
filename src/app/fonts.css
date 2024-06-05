@@ -1,0 +1,34 @@
+@font-face {
+  font-family: 'Montserrat Medium';
+  src: url('../assets/fonts/Montserrat/Montserrat-Medium.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: 'Space Grotesk Bold';
+  src: url('../assets/fonts/Space_Grotesk/SpaceGrotesk.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: 'Space Grotesk Bold (Trujillo)';
+  src: url('../assets/fonts/Space_Grotesk/Trujillo-Bold.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: 'Poppins Medium';
+  src: url('../assets/fonts/Poppins/DroidSans.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: 'Poppins Bold';
+  src: url('../assets/fonts/Poppins/DroidSans-Bold.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 700;
+}
