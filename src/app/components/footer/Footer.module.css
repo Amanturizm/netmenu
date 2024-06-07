@@ -17,7 +17,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: .9vw;
+  gap: 0.9vw;
 
   font-weight: 500;
 }

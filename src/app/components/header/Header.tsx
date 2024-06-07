@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import Image from 'next/image';
 import styles from './Header.module.css';
 import logoIcon from '@/assets/images/logo.svg';
@@ -12,10 +13,10 @@ const Header = () => {
           <Image src={logoIcon.src} width={150} height={40} alt="logo" />
           <div className={styles.navbar_buttons}>
             <button>Создать меню</button>
-            <button className={styles.navbar_buttons_profile}>
+            <Link href="/sign-in" className={styles.navbar_buttons_profile}>
               Войти
               <Image src={profileIcon.src} width={20} height={20} alt="profile" />
-            </button>
+            </Link>
           </div>
         </nav>
 
@@ -41,6 +42,7 @@ const Header = () => {
             width={468}
             height={550}
             quality={100}
+            priority
             alt="smart-phone"
           />
         </div>

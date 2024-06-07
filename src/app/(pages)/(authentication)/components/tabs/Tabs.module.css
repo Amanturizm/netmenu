@@ -1,0 +1,26 @@
+.tabs {
+  border: 3px solid #fff2;
+  border-radius: 64px;
+  background-color: #d4d4d41a;
+  backdrop-filter: blur(20px);
+  padding: 10px 13px;
+
+  display: flex;
+  gap: 24px;
+  margin: 0 auto;
+  width: min-content;
+}
+
+.tabs a {
+  font-family: var(--font-family-medium);
+  font-size: 24px;
+  line-height: 36px;
+
+  padding: 6px 20px;
+}
+
+.in_active {
+  border-radius: 32px;
+  color: #ffa85e;
+  background-color: #fff;
+}

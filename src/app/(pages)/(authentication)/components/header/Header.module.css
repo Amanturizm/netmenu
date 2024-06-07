@@ -1,0 +1,33 @@
+.header {
+  position: absolute;
+  width: 100%;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar_tools {
+  display: flex;
+  align-items: center;
+  gap: 45px;
+}
+
+.navbar_tools a {
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+.navbar_tools div {
+  font-family: 'Montserrat Medium';
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 24px;
+
+  padding: 10px 20px;
+  border-radius: 50px;
+  border: 1px solid #fff;
+}
