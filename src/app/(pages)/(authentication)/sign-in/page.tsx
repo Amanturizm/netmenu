@@ -1,5 +1,7 @@
 'use client';
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import axiosApi from '@/app/axiosApi';
 import Link from 'next/link';
 import Tabs from '@/app/(pages)/(authentication)/components/tabs/Tabs';
 import TextField from '@/app/components/UI/TextField/TextField';
@@ -12,6 +14,7 @@ const initialState: Authentication = {
 };
 
 const Page = () => {
+  const router = useRouter();
   const [state, setState] = useState<Authentication>(initialState);
 
   const changeValue = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -20,8 +23,17 @@ const Page = () => {
     setState((prevState) => ({ ...prevState, [name]: value }));
   };
 
-  const sendData = (e: React.FormEvent) => {
+  const sendData = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    try {
+      const { data } = await axiosApi.post('users/sessions', state);
+      localStorage.setItem('user', JSON.stringify(data));
+
+      router.push('/');
+    } catch (e) {
+      // nothing
+    }
   };
 
   return (

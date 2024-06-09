@@ -1,11 +1,21 @@
+'use client';
+import { useLayoutEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { User } from '@/app/types';
 import styles from './Header.module.css';
 import logoIcon from '@/assets/images/logo.svg';
 import profileIcon from '@/assets/images/profile.png';
 import smartPhoneIcon from '@/assets/images/smart-phone.svg';
 
 const Header = () => {
+  const [user, setUser] = useState<User | null>(null);
+
+  useLayoutEffect(() => {
+    const localUser = JSON.parse(localStorage.getItem('user') as string);
+    setUser(localUser ?? null);
+  }, []);
+
   return (
     <header className={[styles.header, 'wrapper'].join(' ')}>
       <div className={styles.inner_wrapper}>
@@ -13,8 +23,8 @@ const Header = () => {
           <Image src={logoIcon.src} width={150} height={40} alt="logo" />
           <div className={styles.navbar_buttons}>
             <button>Создать меню</button>
-            <Link href="/sign-in" className={styles.navbar_buttons_profile}>
-              Войти
+            <Link href={user ? '/profile' : '/sign-in'} className={styles.navbar_buttons_profile}>
+              {user ? user.username ?? 'Профиль' : 'Войти'}
               <Image src={profileIcon.src} width={20} height={20} alt="profile" />
             </Link>
           </div>

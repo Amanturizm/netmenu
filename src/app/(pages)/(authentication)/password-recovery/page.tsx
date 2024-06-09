@@ -4,16 +4,19 @@ import { useRouter } from 'next/navigation';
 import Tabs from '@/app/(pages)/(authentication)/components/tabs/Tabs';
 import TextField from '@/app/components/UI/TextField/TextField';
 import auth_styles from '../authentication.module.css';
+import axiosApi from '@/app/axiosApi';
 
 const Page = () => {
   const router = useRouter();
 
   const [state, setState] = useState<string>('');
 
-  const sendData = (e: React.FormEvent) => {
+  const sendData = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
+      await axiosApi.post('users/password-reset', { email: state });
+
       router.push('/password-recovery-confirmation');
     } catch {
       // noting
