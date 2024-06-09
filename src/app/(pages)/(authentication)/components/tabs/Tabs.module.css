@@ -6,7 +6,7 @@
   padding: 10px 13px;
 
   display: flex;
-  gap: 24px;
+  gap: 5px;
   margin: 0 auto;
   width: min-content;
 }
@@ -15,12 +15,19 @@
   font-family: var(--font-family-medium);
   font-size: 24px;
   line-height: 36px;
+  border-radius: 32px;
 
+  display: flex;
+  align-items: center;
+  gap: 16px;
   padding: 6px 20px;
+  color: #fff;
 }
 
 .in_active {
-  border-radius: 32px;
-  color: #ffa85e;
   background-color: #fff;
+}
+
+.in_active span {
+  color: #ffa85e;
 }

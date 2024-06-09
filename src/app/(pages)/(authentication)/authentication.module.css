@@ -1,0 +1,47 @@
+.main {
+  background-image: url('../../../assets/images/header-bg-02.png');
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-position: top center;
+
+  padding: 136px 0 164px;
+}
+
+.auth_block {
+  border: 3px solid #fff2;
+  border-radius: 64px;
+  background-color: #d4d4d41a;
+  backdrop-filter: blur(20px);
+  padding: 40px 64px 64px;
+  width: 574px;
+  margin: 52px auto 0;
+  display: flex;
+  flex-direction: column;
+  color: #fff;
+}
+
+.auth_block h2 {
+  font-family: 'Montserrat Medium';
+  font-size: 36px;
+  font-weight: 500;
+  line-height: 43px;
+  text-align: center;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.link_password_recovery {
+  font-family: 'Montserrat Light';
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 19px;
+  margin-top: 8px;
+  color: #fff;
+}
+
+.submit_button {
+  margin: 40px auto 0;
+}

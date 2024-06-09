@@ -1,24 +1,34 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import styles from './Tabs.module.css';
-import { Tab } from '@/app/(pages)/(authentication)/types';
+import Image from 'next/image';
 import { TABS } from '@/app/(pages)/(authentication)/constants';
+import { Tab } from '@/app/(pages)/(authentication)/types';
+import styles from './Tabs.module.css';
 
-interface Props {
-  currentTab: Tab | null;
-}
+const Tabs = () => {
+  const pathname = usePathname();
+  const [currentTab, setTab] = useState<Tab | null>(null);
 
-const Tabs: React.FC<Props> = ({ currentTab }) => {
+  useEffect(() => {
+    const foundTab = TABS.find((tab) => tab.href === pathname);
+    setTab(foundTab ?? TABS[0]);
+  }, [pathname]);
+
   return (
-    currentTab && (
-      <div className={styles.tabs}>
-        {TABS.map((tab, i) => (
-          <Link href={tab.href} className={tab.href === currentTab.href ? styles.in_active : ''} key={tab.href + i}>
-            {tab.title}
+    <div className={styles.tabs}>
+      {TABS.map((tab, i) => {
+        const isActive = tab.href === currentTab?.href;
+
+        return (
+          <Link href={tab.href} className={isActive ? styles.in_active : ''} key={tab.href + i}>
+            <Image src={isActive ? tab.inActiveIcon : tab.icon} width={28} height={28} priority alt={tab.title} />
+
+            <span>{tab.title}</span>
           </Link>
-        ))}
-      </div>
-    )
+        );
+      })}
+    </div>
   );
 };
 
