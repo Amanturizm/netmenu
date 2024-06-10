@@ -3,6 +3,7 @@ import Image from 'next/image';
 import styles from './Header.module.css';
 import logoIcon from '@/assets/images/logo.svg';
 import profileIcon from '@/assets/images/profile.png';
+import Tabs from '@/app/(pages)/(profile)/components/tabs/Tabs';
 
 const Header = () => {
   return (
@@ -20,6 +21,8 @@ const Header = () => {
           </div>
         </div>
       </nav>
+
+      <Tabs />
     </header>
   );
 };

@@ -1,10 +1,10 @@
 'use client';
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Tabs from '@/app/(pages)/(authentication)/components/tabs/Tabs';
 import TextField from '@/app/components/UI/TextField/TextField';
 import auth_styles from '../authentication.module.css';
 import axiosApi from '@/app/axiosApi';
+import Tabs from '@/app/(pages)/(authentication)/components/tabs/Tabs';
 
 const Page = () => {
   const router = useRouter();

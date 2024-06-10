@@ -1,8 +1,7 @@
 .header {
-  position: absolute;
   width: 100%;
   color: #fff;
-  padding-bottom: 172px;
+  padding-bottom: 28px;
 
   background-image: url('../../../../../assets/images/profile-header-bg.png');
   background-repeat: no-repeat;

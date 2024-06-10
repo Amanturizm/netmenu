@@ -1,8 +1,8 @@
 'use client';
 import Link from 'next/link';
-import Tabs from '@/app/(pages)/(authentication)/components/tabs/Tabs';
 import auth_styles from '../authentication.module.css';
 import styles from './password-recovery-confirmation.module.css';
+import Tabs from '@/app/(pages)/(authentication)/components/tabs/Tabs';
 
 const Page = () => {
   return (

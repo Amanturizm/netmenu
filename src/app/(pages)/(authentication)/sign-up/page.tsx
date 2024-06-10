@@ -3,10 +3,10 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import axiosApi from '@/app/axiosApi';
 import Link from 'next/link';
-import Tabs from '@/app/(pages)/(authentication)/components/tabs/Tabs';
 import TextField from '@/app/components/UI/TextField/TextField';
 import { Authentication } from '@/app/(pages)/(authentication)/types';
 import auth_styles from '../authentication.module.css';
+import Tabs from '@/app/(pages)/(authentication)/components/tabs/Tabs';
 
 const initialState: Authentication = {
   email: '',

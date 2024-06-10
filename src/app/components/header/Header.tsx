@@ -23,7 +23,7 @@ const Header = () => {
           <Image src={logoIcon.src} width={150} height={40} alt="logo" />
           <div className={styles.navbar_buttons}>
             <button>Создать меню</button>
-            <Link href={user ? '/profile' : '/sign-in'} className={styles.navbar_buttons_profile}>
+            <Link href={user ? '/my-menus' : '/sign-in'} className={styles.navbar_buttons_profile}>
               {user ? user.username ?? 'Профиль' : 'Войти'}
               <Image src={profileIcon.src} width={20} height={20} alt="profile" />
             </Link>

@@ -43,6 +43,9 @@ a {
   padding: 12px 20px;
   color: #fff;
   background-color: #ffa050;
+
+  display: flex;
+  align-items: center;
 }
 
 .button-orange:hover {
