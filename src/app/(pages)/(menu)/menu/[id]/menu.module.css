@@ -1,0 +1,259 @@
+.section_wrapper {
+  padding: 0 36px;
+}
+
+.button_qr {
+  position: fixed;
+  transform: translateX(130%);
+  bottom: 28px;
+  background-color: #ff8b28;
+  box-shadow:
+    1px 2px 4px 0px #0000001a,
+    5px 6px 8px 0px #00000017,
+    11px 14px 11px 0px #0000000d,
+    20px 26px 13px 0px #00000003,
+    31px 40px 14px 0px #00000000;
+
+  font-family: 'Montserrat Medium';
+  font-weight: 500;
+  font-size: 24px;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.menu_wrapper {
+  position: relative;
+  background-color: #ededed;
+  width: 582px;
+  height: 69vw;
+  margin: 0 auto;
+}
+
+.menu_close {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.menu_bg {
+  position: absolute;
+  top: 0;
+}
+
+.menu {
+  width: 100%;
+  background-color: #ededed;
+  position: absolute;
+  top: 126px;
+  border-radius: 37px 37px 0 0;
+  padding: 36px 0 23px;
+}
+
+.first_section {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.first_section div {
+  display: flex;
+  align-items: center;
+}
+
+.first_section div:first-child {
+  gap: 11px;
+  cursor: pointer;
+}
+
+.first_section div:first-child h2 {
+  font-family: 'Montserrat Medium';
+  font-weight: 500;
+  font-size: 24px;
+}
+
+.first_section div:last-child {
+  gap: 8px;
+}
+
+.upload_image {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.first_section div:last-child p {
+  font-family: 'Montserrat Medium';
+  font-weight: 500;
+  font-size: 12px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.second_section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.second_section div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.second_section input {
+  border: none;
+  border-radius: 10px;
+  padding: 9px 8px;
+  color: #000 !important;
+}
+
+.second_section input,
+.second_section input::placeholder {
+  font-family: 'Montserrat Medium';
+  font-weight: 500;
+  font-size: 12px;
+  color: #8a8a8a;
+}
+
+.second_section input:focus {
+  outline-color: #999999;
+}
+
+.second_section div:first-child input {
+  width: 180px;
+}
+
+.second_section input:nth-child(2) {
+  width: 113px;
+}
+
+.second_section input:nth-child(3) {
+  width: 170px;
+  margin-left: 5px;
+}
+
+.menu_navigation {
+  border-radius: 38px;
+  background-color: #fff;
+  margin-top: 21px;
+  padding: 24px 36px;
+}
+
+.menu_navigation_search {
+  position: relative;
+}
+
+.menu_navigation_search img {
+  position: absolute;
+  top: 50%;
+  left: 17px;
+  transform: translateY(-50%);
+}
+
+.menu_navigation_search input {
+  width: 100%;
+  border: none;
+  border-radius: 33px;
+  background-color: #e5e5e5;
+  padding: 13px 17px 13px 67px;
+}
+
+.menu_navigation_search input,
+.menu_navigation_search input::placeholder {
+  font-family: var(--font-family-medium);
+  font-weight: 400;
+  font-size: 16px;
+}
+
+.menu_navigation_search input:focus {
+  outline-color: #272423;
+}
+
+.menu_navigation_tabs {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.menu_navigation_tabs div {
+  border: 1px solid #ffa85e;
+  border-radius: 36px;
+  background-color: #ffa85e;
+
+  font-family: var(--font-family-bold);
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  color: #fff;
+  cursor: pointer;
+}
+
+.menu_navigation_tabs .in_active {
+  background-color: #fff;
+  color: #ffa85e;
+}
+
+.menu_add_buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin: 28px auto;
+}
+
+.menu_add_buttons button {
+  font-family: var(--font-family-medium);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 47px;
+  padding: 12px 26px;
+}
+
+.menu_add_dish_button {
+  background-color: #f88422;
+}
+
+.menu_add_category_button {
+  background-color: #ff9942;
+}
+
+.menu_categories {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.menu_categories div {
+  border-radius: 86px;
+  padding: 37px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-family: var(--font-family-bold);
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 48px;
+  color: #fff;
+  cursor: pointer;
+
+  background-repeat: no-repeat;
+  background-size: cover;
+}

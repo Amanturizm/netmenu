@@ -33,6 +33,7 @@ a {
   font-family: 'Montserrat Medium', sans-serif;
   font-size: 20px;
   font-weight: 500;
+  color: #fff;
 }
 
 .button-orange {
@@ -46,6 +47,8 @@ a {
 
   display: flex;
   align-items: center;
+  white-space: nowrap;
+  width: min-content;
 }
 
 .button-orange:hover {

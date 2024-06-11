@@ -1,5 +1,5 @@
-import styles from './tariffs.module.css';
 import { Montserrat } from 'next/font/google';
+import styles from './tariffs.module.css';
 
 const montserrat = Montserrat({ weight: ['400'], style: 'normal', subsets: ['latin'] });
 
