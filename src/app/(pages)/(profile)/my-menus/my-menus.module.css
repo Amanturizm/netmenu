@@ -16,3 +16,94 @@
   padding: 9px 16px;
   gap: 25px;
 }
+
+.menus {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  justify-content: center;
+  gap: 21px;
+  margin-top: 32px;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 33px;
+
+  max-width: 280px;
+  margin: 0 auto;
+
+  border-radius: 32px;
+  color: #000000;
+  box-shadow:
+    0px 4px 8px 0px #0000001a,
+    0px 14px 14px 0px #00000017,
+    0px 32px 19px 0px #0000000d,
+    0px 56px 23px 0px #00000003,
+    0px 88px 25px 0px #00000000;
+  padding: 24px 32px 28px 24px;
+
+  font-family: var(--font-family-medium);
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 30px;
+}
+
+.menu div:first-child {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-family-medium);
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 30px;
+}
+
+.menu div:first-child img {
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.not_image {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background-color: #d9d9d9;
+}
+
+.menu div:first-child p {
+  max-width: 158px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.menu div:nth-child(2) h2 {
+  font-family: var(--font-family-medium);
+  font-weight: 300;
+  font-size: 48px;
+  color: #ffa85e;
+}
+
+.menu div:nth-child(2) p {
+  font-family: var(--font-family-medium);
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 36px;
+  color: #424242;
+}
+
+.menu div:nth-child(3) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1vw;
+}
+
+.menu div:nth-child(3) .go_to_menu {
+  font-family: var(--font-family-bold);
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 30px;
+  padding: 9px 44px;
+}

@@ -2,17 +2,50 @@
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import styles from './my-menus.module.css';
-import plusIcon from '@/assets/images/plus.png';
 import axiosApi from '@/app/axiosApi';
-import { useLayoutEffect } from 'react';
+import { useLayoutEffect, useState } from 'react';
+import { IMenu } from '@/app/(pages)/(menu)/types';
+import { apiUrl } from '@/app/constants';
+import plusIcon from '@/assets/images/plus.png';
+import trashIcon from '@/assets/images/trash.svg';
+
+import Link from 'next/link';
+import DeleteModal from '@/app/(pages)/(menu)/components/DeleteModal/DeleteModal';
+
+export interface MyMenusMenuState extends Omit<IMenu, 'address' | 'user' | 'wifiName' | 'wifiPassword'> {
+  categoriesCount: number;
+}
+
+const fetchData = async (): Promise<MyMenusMenuState[]> => {
+  const { data } = await axiosApi.get<MyMenusMenuState[]>('/menus');
+
+  return await Promise.all(
+    data.map(async (menu) => {
+      const { data: categoriesCount } = await axiosApi.get<string>(`/categories/${menu._id}?onlyLength=true`);
+
+      return {
+        ...menu,
+        categoriesCount: parseInt(categoriesCount),
+      };
+    }),
+  );
+};
 
 const Page = () => {
   const router = useRouter();
 
+  const [menus, setMenus] = useState<MyMenusMenuState[]>([]);
+
+  const [deletedMenu, setDeletedMenu] = useState<MyMenusMenuState | null>();
+
   useLayoutEffect(() => {
-    const user = JSON.parse(localStorage.getItem('user') as string);
-    if (!user) return router.push('/sign-in');
-  }, [router]);
+    if (!menus.length) {
+      (async () => {
+        const data = await fetchData();
+        setMenus(data);
+      })();
+    }
+  }, [menus.length]);
 
   const createMenu = async () => {
     try {
@@ -35,7 +68,48 @@ const Page = () => {
         </button>
       </div>
 
-      <div></div>
+      <div className={styles.menus}>
+        {menus.map((menu) => (
+          <div className={styles.menu} key={menu._id}>
+            <div>
+              {menu.image ? (
+                <Image src={apiUrl + menu.image} width={42} height={42} alt="menu-photo" />
+              ) : (
+                <div className={styles.not_image}></div>
+              )}
+              <p>{menu.name || 'Без названия'}</p>
+            </div>
+
+            <div>
+              <h2>{menu.categoriesCount}</h2>
+              <p>категорий блюд</p>
+            </div>
+
+            <div>
+              <Link href={`/menu/${menu._id}`} className={[styles.go_to_menu, 'button-orange'].join(' ')}>
+                Перейти
+              </Link>
+              <button onClick={() => setDeletedMenu(menu)}>
+                <Image src={trashIcon.src} width={26} height={26} alt="trash-icon" />
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {deletedMenu && (
+        <DeleteModal
+          menu_id={deletedMenu._id ?? ''}
+          menu_name={deletedMenu.name}
+          hideModal={() => setDeletedMenu(null)}
+          setNewData={() =>
+            (async () => {
+              const data = await fetchData();
+              setMenus(data);
+            })()
+          }
+        />
+      )}
     </div>
   );
 };

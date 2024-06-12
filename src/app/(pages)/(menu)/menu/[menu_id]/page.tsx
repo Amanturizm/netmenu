@@ -61,14 +61,20 @@ const Page = () => {
 
   useLayoutEffect(() => {
     (async () => {
-      const data = await fetchData(menu_id);
+      try {
+        const data = await fetchData(menu_id);
 
-      const filteredMenu = getFilteredMenu(data);
+        const filteredMenu = getFilteredMenu(data);
 
-      setFetchedData(filteredMenu);
-      setMenu(filteredMenu);
+        setFetchedData(filteredMenu);
+
+        setMenu(filteredMenu);
+      } catch (e) {
+        console.error(e);
+        router.push('/my-menus');
+      }
     })();
-  }, []);
+  }, [menu_id, router]);
 
   const changeValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -131,7 +137,7 @@ const Page = () => {
                     type="text"
                     placeholder="Введите адрес заведения"
                     name="address"
-                    value={menu.address || ''}
+                    value={menu.address ?? ''}
                     onChange={changeValue}
                     onBlur={saveValue}
                     disabled={fieldLoading === 'address'}
@@ -149,7 +155,7 @@ const Page = () => {
                     type="text"
                     placeholder="Название WI-FI"
                     name="wifiName"
-                    value={menu.wifiName || ''}
+                    value={menu.wifiName ?? ''}
                     onChange={changeValue}
                     onBlur={saveValue}
                     disabled={fieldLoading === 'wifiName'}
@@ -163,7 +169,7 @@ const Page = () => {
                     type="text"
                     placeholder="Введите пароль от WI-FI"
                     name="wifiPassword"
-                    value={menu.wifiPassword || ''}
+                    value={menu.wifiPassword ?? ''}
                     onChange={changeValue}
                     onBlur={saveValue}
                     disabled={fieldLoading === 'wifiPassword'}

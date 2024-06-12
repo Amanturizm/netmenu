@@ -1,12 +1,7 @@
+'use client';
 import React from 'react';
-import type { Metadata } from 'next';
 import './fonts.css';
 import './globals.css';
-
-export const metadata: Metadata = {
-  title: 'QR Netmenu',
-  description: 'Application for watching menu',
-};
 
 export default function RootLayout({
   children,
@@ -15,6 +10,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <title>QR Netmenu</title>
+        <meta name="description" content="Application for watching menu" />
+      </head>
       <body>{children}</body>
     </html>
   );

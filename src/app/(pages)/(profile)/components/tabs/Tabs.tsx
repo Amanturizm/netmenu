@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -8,17 +7,12 @@ import { PROFILE_TABS } from '@/app/(pages)/(profile)/constants';
 
 const Tabs = () => {
   const pathname = usePathname();
-  const [currentTab, setTab] = useState<Tab | null>(null);
-
-  useEffect(() => {
-    const foundTab = PROFILE_TABS.find((tab) => tab.href === pathname);
-    setTab(foundTab ?? PROFILE_TABS[0]);
-  }, [pathname]);
+  const currentTab: Tab = PROFILE_TABS.find((tab) => tab.href === pathname) ?? PROFILE_TABS[0];
 
   return (
     <div className={styles.tabs}>
       {PROFILE_TABS.map((tab, i) => {
-        const isActive = tab.href === currentTab?.href;
+        const isActive = tab.href === currentTab.href;
 
         return (
           <Link href={tab.href} className={isActive ? styles.in_active : ''} key={tab.href + i}>

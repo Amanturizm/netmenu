@@ -1,18 +1,28 @@
 'use client';
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
 import Header from '@/app/(pages)/(authentication)/components/header/Header';
 import Footer from '@/app/components/footer/Footer';
 import styles from './authentication.module.css';
+import { useRouter } from 'next/navigation';
 
 interface Props {
   children: React.ReactNode;
 }
 
 const AuthenticationLayout = ({ children }: Readonly<Props>) => {
+  const router = useRouter();
+
+  useLayoutEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user') as string);
+    if (user) return router.back();
+  }, [router]);
+
   return (
     <>
-      <Header />
-      <main className={styles.main}>{children}</main>
+      <div className={styles.bg_wrapper}>
+        <Header />
+        <main className={styles.main}>{children}</main>
+      </div>
       <Footer />
     </>
   );

@@ -1,19 +1,21 @@
 'use client';
-import { useLayoutEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { User } from '@/app/types';
 import styles from './Header.module.css';
 import logoIcon from '@/assets/images/logo.svg';
 import profileIcon from '@/assets/images/profile.png';
 import smartPhoneIcon from '@/assets/images/smart-phone.svg';
+import { User } from '@/app/types';
+import { useLayoutEffect, useState } from 'react';
 
 const Header = () => {
-  const [user, setUser] = useState<User | null>(null);
+  // undefined = useLayoutEffect not worked
+  // null = user is not registered
+  // User = user is signed
+  const [user, setUser] = useState<User | null | undefined>(undefined);
 
   useLayoutEffect(() => {
-    const localUser = JSON.parse(localStorage.getItem('user') as string);
-    setUser(localUser ?? null);
+    setUser(JSON.parse(localStorage.getItem('user') as string) || null);
   }, []);
 
   return (
@@ -21,13 +23,15 @@ const Header = () => {
       <div className={styles.inner_wrapper}>
         <nav className={styles.navbar}>
           <Image src={logoIcon.src} width={150} height={40} alt="logo" />
-          <div className={styles.navbar_buttons}>
-            <Link href={user ? '/my-menus' : '/sign-in'}>Создать меню</Link>
-            <Link href={user ? '/my-menus' : '/sign-in'} className={styles.navbar_buttons_profile}>
-              {user ? user.username ?? 'Профиль' : 'Войти'}
-              <Image src={profileIcon.src} width={20} height={20} alt="profile" />
-            </Link>
-          </div>
+          {user !== undefined && (
+            <div className={styles.navbar_buttons}>
+              <Link href={user ? '/my-menus' : '/sign-in'}>Создать меню</Link>
+              <Link href={user ? '/my-menus' : '/sign-in'} className={styles.navbar_buttons_profile}>
+                {user !== null ? 'Профиль' : 'Войти'}
+                <Image src={profileIcon.src} width={20} height={20} alt="profile" />
+              </Link>
+            </div>
+          )}
         </nav>
 
         <div className={styles.content}>

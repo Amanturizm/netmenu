@@ -1,10 +1,11 @@
-.main {
+.bg_wrapper {
+  background-color: #272423;
   background-image: url('../../../assets/images/header-bg-02.png');
   background-repeat: no-repeat;
   background-size: 100% 100%;
   background-position: top center;
 
-  padding: 136px 0 164px;
+  padding-bottom: 164px;
 }
 
 .auth_block {
