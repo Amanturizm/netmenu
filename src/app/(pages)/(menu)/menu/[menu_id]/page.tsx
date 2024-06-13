@@ -1,8 +1,10 @@
 'use client';
 import Image from 'next/image';
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useLayoutEffect, useRef, useState } from 'react';
 import { IMenu } from '@/app/(pages)/(menu)/types';
 import { useParams, useRouter } from 'next/navigation';
+import axiosApi from '@/app/axiosApi';
+import { apiUrl } from '@/app/constants';
 import styles from './menu.module.css';
 import menuCloseIcon from '@/assets/images/menu-close.png';
 import menuIcon from '@/assets/images/menu-bg.png';
@@ -14,11 +16,6 @@ import searchIcon from '@/assets/images/search.svg';
 import addDishIcon from '@/assets/images/add-dish.svg';
 import addCategoryIcon from '@/assets/images/add-category.svg';
 import qrCodeIcon from '@/assets/images/qr-code.svg';
-
-import category01Icon from '@/assets/images/category_01.png';
-import category02Icon from '@/assets/images/category_02.png';
-import category03Icon from '@/assets/images/category_03.png';
-import axiosApi from '@/app/axiosApi';
 
 type State = Omit<IMenu, 'user' | '_id'>;
 
@@ -42,8 +39,10 @@ const Page = () => {
 
   const [fetchedData, setFetchedData] = useState<State | null>(null);
   const [menu, setMenu] = useState<State | null>(null);
+  const [isNameField, setIsNameField] = useState<boolean>(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const [fieldLoading, setFieldLoading] = useState<keyof State | null>(null);
+  const [fieldsLoading, setFieldsLoading] = useState<Array<keyof State>>([]);
 
   const [groupName, setGroupName] = useState<string>('Еда');
 
@@ -79,156 +78,239 @@ const Page = () => {
   const changeValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
-    setMenu((prevState) => prevState && { ...prevState, [name]: value });
+    setMenu((prevState) => prevState && { ...prevState, [name]: value.trimStart() });
   };
 
-  const saveValue = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const saveValue = async (e: React.FocusEvent<HTMLInputElement> | React.KeyboardEvent<HTMLInputElement>) => {
     const { name, value } = e.target as { name: keyof State; value: string };
 
     if (fetchedData && fetchedData[name] === value) return;
 
     try {
-      setFieldLoading(name);
+      setFieldsLoading((prevState) => prevState && [...prevState, name]);
+
       await axiosApi.patch('/menus/' + menu_id, { [name]: value });
 
       setFetchedData((prevState) => prevState && { ...prevState, [name]: value });
     } catch (e) {
       console.error(e);
     } finally {
-      setFieldLoading(null);
+      setFieldsLoading((prevState) => prevState && prevState.filter((field) => field !== name));
     }
   };
 
-  return (
-    menu && (
-      <div className={styles.menu_wrapper}>
-        <Image
-          className={styles.menu_close}
-          onClick={() => router.push('/my-menus')}
-          src={menuCloseIcon.src}
-          width={40}
-          height={40}
-          alt="close-icon"
-        />
-        <Image className={styles.menu_bg} src={menuIcon.src} width={582} height={253} priority alt="menu-bg" />
+  const saveImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, files } = e.target as { name: keyof State; files: File[] | null };
+    if (!files || fieldsLoading.includes(name)) return;
 
-        <div className={styles.menu}>
-          <div className={[styles.menu_info, styles.section_wrapper].join(' ')}>
-            <div className={styles.first_section}>
-              <div>
-                <h2>{menu.name || 'Название'}</h2>
+    try {
+      setFieldsLoading((prevState) => prevState && [...prevState, name]);
+
+      const formData = new FormData();
+      formData.append(e.target.name, files[0]);
+
+      const { data } = await axiosApi.patch('/menus/' + menu_id, formData);
+
+      setFetchedData((prevState) => prevState && { ...prevState, [name]: data[name] });
+      setMenu((prevState) => prevState && { ...prevState, [name]: data[name] });
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setFieldsLoading((prevState) => prevState && prevState.filter((field) => field !== name));
+    }
+  };
+
+  if (!menu) return null;
+
+  return (
+    <div className={styles.menu_wrapper}>
+      <Image
+        className={styles.menu_close}
+        onClick={() => router.push('/my-menus')}
+        src={menuCloseIcon.src}
+        width={40}
+        height={40}
+        alt="close-icon"
+      />
+      <Image className={styles.menu_bg} src={menuIcon.src} width={582} height={253} priority alt="menu-bg" />
+
+      <div className={styles.menu}>
+        <div className={[styles.menu_info, styles.section_wrapper].join(' ')}>
+          <div className={styles.first_section}>
+            {isNameField ? (
+              <div className={styles.name_field}>
+                <input
+                  type="text"
+                  name="name"
+                  value={menu.name || ''}
+                  onChange={changeValue}
+                  onBlur={async (e) => {
+                    await saveValue(e);
+                    setIsNameField(false);
+                  }}
+                  onKeyDown={async (e) => {
+                    if (e.key === 'Enter') {
+                      await saveValue(e);
+                      setIsNameField(false);
+                    }
+                  }}
+                  disabled={fieldsLoading.includes('name')}
+                  placeholder="Введите название"
+                />
+
+                {fieldsLoading.includes('name') && <span className={styles.loader}></span>}
+              </div>
+            ) : (
+              <div onClick={() => setIsNameField(true)}>
+                <h2>{menu.name && menu.name.trim() ? menu.name : 'Название'}</h2>
                 <Image src={editIcon.src} width={24} height={24} alt="edit-icon" />
               </div>
+            )}
 
-              <div>
-                <div className={styles.upload_image}>
-                  <Image src={uploadImageIcon.src} width={30} height={30} alt="upload-icon" />
-                </div>
-                <p>Добавьте фото</p>
-              </div>
-            </div>
-
-            <div className={styles.second_section}>
-              <div>
-                <Image src={locationIcon.src} width={18} height={18} alt="location-icon" />
-
-                <div className={styles.second_section_input}>
-                  <input
-                    type="text"
-                    placeholder="Введите адрес заведения"
-                    name="address"
-                    value={menu.address ?? ''}
-                    onChange={changeValue}
-                    onBlur={saveValue}
-                    disabled={fieldLoading === 'address'}
-                  />
-
-                  {fieldLoading === 'address' && <span className={styles.loader}></span>}
-                </div>
-              </div>
-
-              <div>
-                <Image src={wifiIcon.src} width={18} height={18} alt="location-icon" />
-
-                <div className={styles.second_section_input}>
-                  <input
-                    type="text"
-                    placeholder="Название WI-FI"
-                    name="wifiName"
-                    value={menu.wifiName ?? ''}
-                    onChange={changeValue}
-                    onBlur={saveValue}
-                    disabled={fieldLoading === 'wifiName'}
-                  />
-
-                  {fieldLoading === 'wifiName' && <span className={styles.loader}></span>}
-                </div>
-
-                <div className={styles.second_section_input}>
-                  <input
-                    type="text"
-                    placeholder="Введите пароль от WI-FI"
-                    name="wifiPassword"
-                    value={menu.wifiPassword ?? ''}
-                    onChange={changeValue}
-                    onBlur={saveValue}
-                    disabled={fieldLoading === 'wifiPassword'}
-                  />
-
-                  {fieldLoading === 'wifiPassword' && <span className={styles.loader}></span>}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className={styles.menu_navigation}>
-            <div className={styles.menu_navigation_search}>
-              <Image src={searchIcon.src} width={30} height={30} alt="search-icon" />
-              <input type="text" placeholder="Поиск добавленного блюда" />
-            </div>
-
-            <div className={styles.menu_navigation_tabs}>
+            <div>
               <div
-                className={groupName === 'Еда' ? styles.in_active : undefined}
-                style={{ padding: '11px 45px' }}
-                onClick={() => setGroupName('Еда')}
+                className={[styles.upload_image, fieldsLoading.includes('image') && styles.upload_image_loading].join(
+                  ' ',
+                )}
+                style={{
+                  border: menu.image && !fieldsLoading.includes('image') ? '2px solid #999999' : 'none',
+                  overflow: 'hidden',
+                }}
               >
-                Еда
+                <Image
+                  src={menu.image ? apiUrl + menu.image : uploadImageIcon.src}
+                  width={menu.image ? 50 : 30}
+                  height={menu.image ? 50 : 30}
+                  unoptimized
+                  priority
+                  alt="upload-icon"
+                />
+
+                {fieldsLoading.includes('image') && <span className={styles.image_loader}></span>}
               </div>
-              <div
-                className={groupName === 'Напитки' ? styles.in_active : undefined}
-                style={{ padding: '11px 32px' }}
-                onClick={() => setGroupName('Напитки')}
+              <p
+                style={{ cursor: fieldsLoading.includes('image') ? 'not-allowed' : 'pointer' }}
+                onClick={() => !fieldsLoading.includes('image') && fileInputRef.current?.click()}
               >
-                Напитки
-              </div>
+                {menu.image ? 'Изменить' : 'Добавьте'} фото
+              </p>
+              <input
+                type="file"
+                name="image"
+                accept=".jpg, .jpeg, .png, .svg, .webp"
+                ref={fileInputRef}
+                onChange={saveImage}
+                style={{ display: 'none' }}
+              />
             </div>
           </div>
 
-          <div className={styles.menu_add_buttons}>
-            <button className={[styles.menu_add_dish_button, 'button-orange'].join(' ')}>
-              <span>Добавить блюдо</span>
-              <Image src={addDishIcon.src} width={28} height={28} alt="add-dish-icon" />
-            </button>
-            <button className={[styles.menu_add_category_button, 'button-orange'].join(' ')}>
-              <span>Добавить категорию</span>
-              <Image src={addCategoryIcon.src} width={28} height={28} alt="add-category-icon" />
-            </button>
+          <form autoComplete="off" className={styles.second_section}>
+            <div>
+              <Image src={locationIcon.src} width={18} height={18} alt="location-icon" />
+
+              <div className={styles.second_section_input}>
+                <input
+                  type="text"
+                  placeholder="Введите адрес заведения"
+                  name="address"
+                  value={menu.address ?? ''}
+                  onChange={changeValue}
+                  onBlur={saveValue}
+                  onKeyDown={(e) => e.key === 'Enter' && saveValue(e)}
+                  disabled={fieldsLoading.includes('address')}
+                />
+
+                {fieldsLoading.includes('address') && <span className={styles.loader}></span>}
+              </div>
+            </div>
+
+            <div>
+              <Image src={wifiIcon.src} width={18} height={18} alt="location-icon" />
+
+              <div className={styles.second_section_input}>
+                <input
+                  type="text"
+                  placeholder="Название WI-FI"
+                  name="wifiName"
+                  value={menu.wifiName ?? ''}
+                  onChange={changeValue}
+                  onBlur={saveValue}
+                  onKeyDown={(e) => e.key === 'Enter' && saveValue(e)}
+                  disabled={fieldsLoading.includes('wifiName')}
+                />
+
+                {fieldsLoading.includes('wifiName') && <span className={styles.loader}></span>}
+              </div>
+
+              <div className={styles.second_section_input}>
+                <input
+                  type="text"
+                  placeholder="Введите пароль от WI-FI"
+                  name="wifiPassword"
+                  value={menu.wifiPassword ?? ''}
+                  onChange={changeValue}
+                  onBlur={saveValue}
+                  onKeyDown={(e) => e.key === 'Enter' && saveValue(e)}
+                  disabled={fieldsLoading.includes('wifiPassword')}
+                />
+
+                {fieldsLoading.includes('wifiPassword') && <span className={styles.loader}></span>}
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div className={styles.menu_navigation}>
+          <div className={styles.menu_navigation_search}>
+            <Image src={searchIcon.src} width={30} height={30} alt="search-icon" />
+            <input type="text" placeholder="Поиск добавленного блюда" />
           </div>
 
-          <div className={[styles.menu_categories, styles.section_wrapper].join(' ')}>
-            <div style={{ backgroundImage: `url(${category01Icon.src})` }}>Горячие блюда</div>
-            <div style={{ backgroundImage: `url(${category02Icon.src})` }}>Салаты</div>
-            <div style={{ backgroundImage: `url(${category03Icon.src})` }}>Десерты</div>
+          <div className={styles.menu_navigation_tabs}>
+            <div
+              className={groupName === 'Еда' ? styles.in_active : undefined}
+              style={{ padding: '11px 45px' }}
+              onClick={() => setGroupName('Еда')}
+            >
+              Еда
+            </div>
+            <div
+              className={groupName === 'Напитки' ? styles.in_active : undefined}
+              style={{ padding: '11px 32px' }}
+              onClick={() => setGroupName('Напитки')}
+            >
+              Напитки
+            </div>
           </div>
         </div>
 
-        <button className={[styles.button_qr, 'button-orange'].join(' ')}>
-          <span>Открыть QR</span>
-          <Image src={qrCodeIcon.src} width={38} height={38} alt="qr-code-icon" />
-        </button>
+        <div className={styles.menu_add_buttons}>
+          <button className={[styles.menu_add_dish_button, 'button-orange'].join(' ')}>
+            <span>Добавить блюдо</span>
+            <Image src={addDishIcon.src} width={28} height={28} alt="add-dish-icon" />
+          </button>
+          <button className={[styles.menu_add_category_button, 'button-orange'].join(' ')}>
+            <span>Добавить категорию</span>
+            <Image src={addCategoryIcon.src} width={28} height={28} alt="add-category-icon" />
+          </button>
+        </div>
+
+        <div className={[styles.menu_categories, styles.section_wrapper].join(' ')}>
+          {[].map(
+            () => null,
+            // <div style={{ backgroundImage: `url(${category.image})` }} key={category._id}>
+            //   <p>{category.name}</p>
+            // </div>
+          )}
+        </div>
       </div>
-    )
+
+      <button className={[styles.button_qr, 'button-orange'].join(' ')}>
+        <span>Открыть QR</span>
+        <Image src={qrCodeIcon.src} width={38} height={38} alt="qr-code-icon" />
+      </button>
+    </div>
   );
 };
 
