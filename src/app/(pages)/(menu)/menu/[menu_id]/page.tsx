@@ -1,10 +1,10 @@
 'use client';
 import Image from 'next/image';
 import React, { useLayoutEffect, useRef, useState } from 'react';
-import { IMenu } from '@/app/(pages)/(menu)/types';
+import { ICategory, IMenu } from '@/app/(pages)/(menu)/types';
 import { useParams, useRouter } from 'next/navigation';
 import axiosApi from '@/app/axiosApi';
-import { apiUrl } from '@/app/constants';
+import { s3Url } from '@/app/constants';
 import styles from './menu.module.css';
 import menuCloseIcon from '@/assets/images/menu-close.png';
 import menuIcon from '@/assets/images/menu-bg.png';
@@ -16,6 +16,7 @@ import searchIcon from '@/assets/images/search.svg';
 import addDishIcon from '@/assets/images/add-dish.svg';
 import addCategoryIcon from '@/assets/images/add-category.svg';
 import qrCodeIcon from '@/assets/images/qr-code.svg';
+import CreateCategoryModal from '@/app/(pages)/(menu)/components/CreateCategoryModal/CreateCategoryModal';
 
 type State = Omit<IMenu, 'user' | '_id'>;
 
@@ -28,9 +29,10 @@ const initialState: State = {
 };
 
 const fetchData = async (menu_id: string) => {
-  const { data } = await axiosApi.get<State>('/menus/' + menu_id);
+  const { data: menu } = await axiosApi.get<State>('/menus/' + menu_id);
+  const { data: categories } = await axiosApi.get<ICategory[]>('/categories/' + menu_id);
 
-  return data;
+  return { menu, categories };
 };
 
 const Page = () => {
@@ -45,6 +47,10 @@ const Page = () => {
   const [fieldsLoading, setFieldsLoading] = useState<Array<keyof State>>([]);
 
   const [groupName, setGroupName] = useState<string>('Еда');
+
+  const [categories, setCategories] = useState<ICategory[]>([]);
+
+  const [modalType, setModalType] = useState<string>('');
 
   const getFilteredMenu = (data: State) => {
     const stateKeys = Object.keys(initialState) as Array<keyof State>;
@@ -61,13 +67,14 @@ const Page = () => {
   useLayoutEffect(() => {
     (async () => {
       try {
-        const data = await fetchData(menu_id);
+        const { menu: menuData, categories: categoriesData } = await fetchData(menu_id);
 
-        const filteredMenu = getFilteredMenu(data);
+        const filteredMenu = getFilteredMenu(menuData);
 
         setFetchedData(filteredMenu);
 
         setMenu(filteredMenu);
+        setCategories(categoriesData);
       } catch (e) {
         console.error(e);
         router.push('/my-menus');
@@ -101,7 +108,7 @@ const Page = () => {
 
   const saveImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, files } = e.target as { name: keyof State; files: File[] | null };
-    if (!files || fieldsLoading.includes(name)) return;
+    if (!files || !files.length || fieldsLoading.includes(name)) return;
 
     try {
       setFieldsLoading((prevState) => prevState && [...prevState, name]);
@@ -162,7 +169,7 @@ const Page = () => {
               </div>
             ) : (
               <div onClick={() => setIsNameField(true)}>
-                <h2>{menu.name && menu.name.trim() ? menu.name : 'Название'}</h2>
+                <h2 title={menu.name || undefined}>{menu.name && menu.name.trim() ? menu.name : 'Название'}</h2>
                 <Image src={editIcon.src} width={24} height={24} alt="edit-icon" />
               </div>
             )}
@@ -178,7 +185,7 @@ const Page = () => {
                 }}
               >
                 <Image
-                  src={menu.image ? apiUrl + menu.image : uploadImageIcon.src}
+                  src={menu.image ? s3Url + menu.image : uploadImageIcon.src}
                   width={menu.image ? 50 : 30}
                   height={menu.image ? 50 : 30}
                   unoptimized
@@ -286,23 +293,28 @@ const Page = () => {
         </div>
 
         <div className={styles.menu_add_buttons}>
-          <button className={[styles.menu_add_dish_button, 'button-orange'].join(' ')}>
+          <button
+            className={[styles.menu_add_dish_button, 'button-orange'].join(' ')}
+            onClick={() => setModalType('dish')}
+          >
             <span>Добавить блюдо</span>
             <Image src={addDishIcon.src} width={28} height={28} alt="add-dish-icon" />
           </button>
-          <button className={[styles.menu_add_category_button, 'button-orange'].join(' ')}>
+          <button
+            className={[styles.menu_add_category_button, 'button-orange'].join(' ')}
+            onClick={() => setModalType('category')}
+          >
             <span>Добавить категорию</span>
             <Image src={addCategoryIcon.src} width={28} height={28} alt="add-category-icon" />
           </button>
         </div>
 
         <div className={[styles.menu_categories, styles.section_wrapper].join(' ')}>
-          {[].map(
-            () => null,
-            // <div style={{ backgroundImage: `url(${category.image})` }} key={category._id}>
-            //   <p>{category.name}</p>
-            // </div>
-          )}
+          {categories.map((category) => (
+            <div style={{ backgroundImage: `url(${category.image})` }} key={category._id}>
+              <p>{category.name}</p>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -310,6 +322,8 @@ const Page = () => {
         <span>Открыть QR</span>
         <Image src={qrCodeIcon.src} width={38} height={38} alt="qr-code-icon" />
       </button>
+
+      {modalType === 'category' && <CreateCategoryModal hideModal={() => setModalType('')} />}
     </div>
   );
 };

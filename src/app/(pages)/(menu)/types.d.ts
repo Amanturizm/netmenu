@@ -10,10 +10,10 @@ export interface IMenu {
 
 export interface ICategory {
   _id?: string;
-  menu: string;
+  menu?: string;
   groupName: string;
   name: string;
-  image: string;
+  image: File | string;
 }
 
 export interface IDish {

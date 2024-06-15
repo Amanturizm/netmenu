@@ -26,7 +26,10 @@ const DeleteModal: React.FC<Props> = ({ menu_id, menu_name, hideModal, setNewDat
       <div className={styles.backdrop} onClick={hideModal}></div>
 
       <div className={styles.modal}>
-        <p>Вы уверены, что хотите удалить меню «{menu_name || 'Без названия'}»?</p>
+        <p>
+          Вы уверены, что хотите удалить меню «<span title={menu_name || undefined}>{menu_name || 'Без названия'}</span>
+          »?
+        </p>
 
         <div>
           <button className={styles.cancel_button} onClick={hideModal}>

@@ -5,7 +5,7 @@ import styles from './my-menus.module.css';
 import axiosApi from '@/app/axiosApi';
 import { useLayoutEffect, useState } from 'react';
 import { IMenu } from '@/app/(pages)/(menu)/types';
-import { apiUrl } from '@/app/constants';
+import { s3Url } from '@/app/constants';
 import plusIcon from '@/assets/images/plus.png';
 import trashIcon from '@/assets/images/trash.svg';
 
@@ -73,11 +73,11 @@ const Page = () => {
           <div className={styles.menu} key={menu._id}>
             <div>
               {menu.image ? (
-                <Image src={apiUrl + menu.image} width={42} height={42} alt="menu-photo" />
+                <Image src={s3Url + menu.image} width={42} height={42} unoptimized alt="menu-photo" />
               ) : (
                 <div className={styles.not_image}></div>
               )}
-              <p>{menu.name || 'Без названия'}</p>
+              <p title={menu.name || undefined}>{menu.name || 'Без названия'}</p>
             </div>
 
             <div>
