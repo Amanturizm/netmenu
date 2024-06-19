@@ -39,6 +39,7 @@
   position: fixed;
   transform: translateX(130%);
   bottom: 28px;
+  z-index: 2;
   background-color: #ff8b28;
   box-shadow:
     1px 2px 4px 0px #0000001a,
@@ -83,7 +84,7 @@
   position: absolute;
   top: 126px;
   border-radius: 37px 37px 0 0;
-  padding: 36px 0 23px;
+  padding: 36px 0 0;
 }
 
 .first_section {
@@ -182,51 +183,60 @@
   margin-top: 20px;
 }
 
-.second_section div {
+.second_section_first_line img,
+.second_section_second_line img {
+  margin-right: 8px;
+}
+
+.second_section_first_line,
+.second_section_second_line {
   display: flex;
   align-items: center;
-  gap: 8px;
 }
 
-.second_section_input {
+.address,
+.wifi_name,
+.wifi_password {
   position: relative;
+  display: flex;
+  align-items: center;
 }
 
-.second_section_input input {
+.second_section input {
   border: none;
   border-radius: 10px;
   padding: 9px 8px;
   color: #000 !important;
+  width: 100%;
 }
 
-.second_section_input input,
-.second_section_input input::placeholder {
+.second_section input,
+.second_section input::placeholder {
   font-family: 'Montserrat Medium';
   font-weight: 500;
   font-size: 12px;
   color: #8a8a8a;
 }
 
-.second_section_input input:focus {
+.second_section input:focus {
   outline-color: #999999;
 }
 
-.second_section_input input:disabled {
+.second_section input:disabled {
   background-color: #f9f6ee;
   cursor: not-allowed;
 }
 
-.second_section div:first-child .second_section_input input {
+.address {
   width: 180px;
 }
 
-.second_section_input:nth-child(2) input {
-  width: 113px;
+.wifi_name {
+  width: 115px;
 }
 
-.second_section_input:nth-child(3) input {
+.wifi_password {
   width: 170px;
-  margin-left: 5px;
 }
 
 .menu_navigation {
@@ -289,79 +299,4 @@
 .menu_navigation_tabs .in_active {
   background-color: #fff;
   color: #ffa85e;
-}
-
-.menu_add_buttons {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  margin: 28px auto;
-}
-
-.menu_add_buttons button {
-  font-family: var(--font-family-medium);
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 24px;
-
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  border-radius: 47px;
-  padding: 12px 26px;
-}
-
-.menu_add_dish_button {
-  background-color: #f88422;
-}
-
-.menu_add_category_button {
-  background-color: #ff9942;
-}
-
-.menu_categories {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.menu_categories div {
-  border-radius: 86px;
-  padding: 37px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-
-  position: relative;
-  overflow: hidden;
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: 100%;
-  transition: all 250ms linear;
-}
-
-.menu_categories div::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1;
-}
-
-.menu_categories div:hover {
-  background-size: 110%;
-}
-
-.menu_categories div p {
-  font-family: var(--font-family-bold);
-  font-weight: 600;
-  font-size: 32px;
-  line-height: 48px;
-  color: #fff;
-  z-index: 2;
 }

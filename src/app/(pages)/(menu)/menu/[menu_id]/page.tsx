@@ -1,10 +1,11 @@
 'use client';
 import Image from 'next/image';
 import React, { useLayoutEffect, useRef, useState } from 'react';
-import { ICategory, IMenu } from '@/app/(pages)/(menu)/types';
-import { useParams, useRouter } from 'next/navigation';
+import { IMenu } from '@/app/(pages)/(menu)/types';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import axiosApi from '@/app/axiosApi';
 import { s3Url } from '@/app/constants';
+import Main from '@/app/(pages)/(menu)/components/Main/Main';
 import styles from './menu.module.css';
 import menuCloseIcon from '@/assets/images/menu-close.png';
 import menuIcon from '@/assets/images/menu-bg.png';
@@ -13,10 +14,8 @@ import uploadImageIcon from '@/assets/images/upload-image.svg';
 import locationIcon from '@/assets/images/location.png';
 import wifiIcon from '@/assets/images/wi-fi.png';
 import searchIcon from '@/assets/images/search.svg';
-import addDishIcon from '@/assets/images/add-dish.svg';
-import addCategoryIcon from '@/assets/images/add-category.svg';
 import qrCodeIcon from '@/assets/images/qr-code.svg';
-import CreateCategoryModal from '@/app/(pages)/(menu)/components/CreateCategoryModal/CreateCategoryModal';
+import Dishes from '@/app/(pages)/(menu)/components/Dishes/Dishes';
 
 type State = Omit<IMenu, 'user' | '_id'>;
 
@@ -30,14 +29,14 @@ const initialState: State = {
 
 const fetchData = async (menu_id: string) => {
   const { data: menu } = await axiosApi.get<State>('/menus/' + menu_id);
-  const { data: categories } = await axiosApi.get<ICategory[]>('/categories/' + menu_id);
 
-  return { menu, categories };
+  return { menu };
 };
 
 const Page = () => {
   const router = useRouter();
   const { menu_id } = useParams<{ menu_id: string }>();
+  const categoryId = useSearchParams().get('category');
 
   const [fetchedData, setFetchedData] = useState<State | null>(null);
   const [menu, setMenu] = useState<State | null>(null);
@@ -47,10 +46,6 @@ const Page = () => {
   const [fieldsLoading, setFieldsLoading] = useState<Array<keyof State>>([]);
 
   const [groupName, setGroupName] = useState<string>('Еда');
-
-  const [categories, setCategories] = useState<ICategory[]>([]);
-
-  const [modalType, setModalType] = useState<string>('');
 
   const getFilteredMenu = (data: State) => {
     const stateKeys = Object.keys(initialState) as Array<keyof State>;
@@ -67,14 +62,13 @@ const Page = () => {
   useLayoutEffect(() => {
     (async () => {
       try {
-        const { menu: menuData, categories: categoriesData } = await fetchData(menu_id);
+        const { menu: menuData } = await fetchData(menu_id);
 
         const filteredMenu = getFilteredMenu(menuData);
 
         setFetchedData(filteredMenu);
 
         setMenu(filteredMenu);
-        setCategories(categoriesData);
       } catch (e) {
         console.error(e);
         router.push('/my-menus');
@@ -118,12 +112,9 @@ const Page = () => {
 
       const { data } = await axiosApi.patch('/menus/' + menu_id, formData);
 
-      setFetchedData((prevState) => prevState && { ...prevState, [name]: data[name] });
       setMenu((prevState) => prevState && { ...prevState, [name]: data[name] });
     } catch (e) {
       console.error(e);
-    } finally {
-      setFieldsLoading((prevState) => prevState && prevState.filter((field) => field !== name));
     }
   };
 
@@ -150,6 +141,7 @@ const Page = () => {
                   type="text"
                   name="name"
                   value={menu.name || ''}
+                  autoFocus
                   onChange={changeValue}
                   onBlur={async (e) => {
                     await saveValue(e);
@@ -186,10 +178,32 @@ const Page = () => {
               >
                 <Image
                   src={menu.image ? s3Url + menu.image : uploadImageIcon.src}
-                  width={menu.image ? 50 : 30}
-                  height={menu.image ? 50 : 30}
+                  width={
+                    (fetchedData?.image && fieldsLoading.includes('image')) ||
+                    (menu.image && !fieldsLoading.includes('image'))
+                      ? 50
+                      : 30
+                  }
+                  height={
+                    (fetchedData?.image && fieldsLoading.includes('image')) ||
+                    (menu.image && !fieldsLoading.includes('image'))
+                      ? 50
+                      : 30
+                  }
                   unoptimized
                   priority
+                  onLoad={() => {
+                    if (fieldsLoading.includes('image')) {
+                      setFieldsLoading((prevState) => prevState && prevState.filter((field) => field !== 'image'));
+                      setFetchedData({ ...menu });
+                    }
+                  }}
+                  onError={() => {
+                    if (fieldsLoading.includes('image')) {
+                      setFieldsLoading((prevState) => prevState && prevState.filter((field) => field !== 'image'));
+                      setFetchedData({ ...menu });
+                    }
+                  }}
                   alt="upload-icon"
                 />
 
@@ -199,7 +213,11 @@ const Page = () => {
                 style={{ cursor: fieldsLoading.includes('image') ? 'not-allowed' : 'pointer' }}
                 onClick={() => !fieldsLoading.includes('image') && fileInputRef.current?.click()}
               >
-                {menu.image ? 'Изменить' : 'Добавьте'} фото
+                {(fetchedData?.image && fieldsLoading.includes('image')) ||
+                (menu.image && !fieldsLoading.includes('image'))
+                  ? 'Изменить '
+                  : 'Добавьте '}
+                фото
               </p>
               <input
                 type="file"
@@ -213,16 +231,17 @@ const Page = () => {
           </div>
 
           <form autoComplete="off" className={styles.second_section}>
-            <div>
+            <div className={styles.second_section_first_line}>
               <Image src={locationIcon.src} width={18} height={18} alt="location-icon" />
 
-              <div className={styles.second_section_input}>
+              <div className={styles.address}>
                 <input
                   type="text"
                   placeholder="Введите адрес заведения"
                   name="address"
+                  title={menu.address ?? ''}
                   value={menu.address ?? ''}
-                  onChange={changeValue}
+                  onChange={(e) => e.target.value.length <= 30 && changeValue(e)}
                   onBlur={saveValue}
                   onKeyDown={(e) => e.key === 'Enter' && saveValue(e)}
                   disabled={fieldsLoading.includes('address')}
@@ -232,16 +251,17 @@ const Page = () => {
               </div>
             </div>
 
-            <div>
+            <div className={styles.second_section_second_line}>
               <Image src={wifiIcon.src} width={18} height={18} alt="location-icon" />
 
-              <div className={styles.second_section_input}>
+              <div className={styles.wifi_name}>
                 <input
                   type="text"
                   placeholder="Название WI-FI"
                   name="wifiName"
+                  title={menu.wifiName ?? ''}
                   value={menu.wifiName ?? ''}
-                  onChange={changeValue}
+                  onChange={(e) => e.target.value.length <= 16 && changeValue(e)}
                   onBlur={saveValue}
                   onKeyDown={(e) => e.key === 'Enter' && saveValue(e)}
                   disabled={fieldsLoading.includes('wifiName')}
@@ -250,16 +270,18 @@ const Page = () => {
                 {fieldsLoading.includes('wifiName') && <span className={styles.loader}></span>}
               </div>
 
-              <div className={styles.second_section_input}>
+              <div className={styles.wifi_password}>
                 <input
                   type="text"
                   placeholder="Введите пароль от WI-FI"
                   name="wifiPassword"
+                  title={menu.wifiPassword ?? ''}
                   value={menu.wifiPassword ?? ''}
-                  onChange={changeValue}
+                  onChange={(e) => e.target.value.length <= 15 && changeValue(e)}
                   onBlur={saveValue}
                   onKeyDown={(e) => e.key === 'Enter' && saveValue(e)}
                   disabled={fieldsLoading.includes('wifiPassword')}
+                  style={{ marginLeft: 5 }}
                 />
 
                 {fieldsLoading.includes('wifiPassword') && <span className={styles.loader}></span>}
@@ -292,38 +314,14 @@ const Page = () => {
           </div>
         </div>
 
-        <div className={styles.menu_add_buttons}>
-          <button
-            className={[styles.menu_add_dish_button, 'button-orange'].join(' ')}
-            onClick={() => setModalType('dish')}
-          >
-            <span>Добавить блюдо</span>
-            <Image src={addDishIcon.src} width={28} height={28} alt="add-dish-icon" />
-          </button>
-          <button
-            className={[styles.menu_add_category_button, 'button-orange'].join(' ')}
-            onClick={() => setModalType('category')}
-          >
-            <span>Добавить категорию</span>
-            <Image src={addCategoryIcon.src} width={28} height={28} alt="add-category-icon" />
-          </button>
-        </div>
-
-        <div className={[styles.menu_categories, styles.section_wrapper].join(' ')}>
-          {categories.map((category) => (
-            <div style={{ backgroundImage: `url(${category.image})` }} key={category._id}>
-              <p>{category.name}</p>
-            </div>
-          ))}
-        </div>
+        {!categoryId && <Main menu_id={menu_id} />}
+        {categoryId && <Dishes categoryId={categoryId} />}
       </div>
 
       <button className={[styles.button_qr, 'button-orange'].join(' ')}>
         <span>Открыть QR</span>
         <Image src={qrCodeIcon.src} width={38} height={38} alt="qr-code-icon" />
       </button>
-
-      {modalType === 'category' && <CreateCategoryModal hideModal={() => setModalType('')} />}
     </div>
   );
 };

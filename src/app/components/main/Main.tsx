@@ -2,9 +2,10 @@ import Image from 'next/image';
 import { Montserrat } from 'next/font/google';
 import styles from './Main.module.css';
 import smartPhoneIcon from '@/assets/images/smart-phone-02.svg';
-import smartPhoneMoneyIcon01 from '@/assets/images/smart-phone-icon-01.svg';
-import smartPhoneMoneyIcon02 from '@/assets/images/smart-phone-icon-02.svg';
-import smartPhoneMoneyIcon03 from '@/assets/images/smart-phone-icon-03.svg';
+import smartPhoneMoneyIcon01 from '@/assets/images/smart-phone-icon-01.png';
+import smartPhoneMoneyIcon02 from '@/assets/images/smart-phone-icon-02.png';
+import smartPhoneMoneyIcon03 from '@/assets/images/smart-phone-icon-03.png';
+import Link from 'next/link';
 
 const montserrat = Montserrat({ weight: ['400'], style: 'normal', subsets: ['latin'] });
 
@@ -31,8 +32,9 @@ const Main = () => {
             <Image
               className={styles.section_one_smart_phone_money_01}
               src={smartPhoneMoneyIcon01.src}
-              width={113}
-              height={113}
+              width={107}
+              height={110}
+              unoptimized
               alt="smart-phone-icon"
             />
             <Image
@@ -40,6 +42,7 @@ const Main = () => {
               src={smartPhoneMoneyIcon02.src}
               width={113}
               height={113}
+              unoptimized
               alt="smart-phone-icon"
             />
             <Image
@@ -47,6 +50,7 @@ const Main = () => {
               src={smartPhoneMoneyIcon03.src}
               width={113}
               height={113}
+              unoptimized
               alt="smart-phone-icon"
             />
           </div>
@@ -98,7 +102,9 @@ const Main = () => {
 
             <div>
               <p className={montserrat.className}>9900 ₽</p>
-              <button className="button-orange">Купить</button>
+              <Link href="/tariffs" className="button-orange">
+                Купить
+              </Link>
               <p>оплата производится за месяц, общая cтоимость равнается</p>
             </div>
           </div>
@@ -115,7 +121,9 @@ const Main = () => {
 
             <div>
               <p className={montserrat.className}>9900 ₽</p>
-              <button className="button-orange">Купить</button>
+              <Link href="/tariffs" className="button-orange">
+                Купить
+              </Link>
               <p>оплата производится за месяц, общая cтоимость равнается</p>
             </div>
           </div>
@@ -132,7 +140,9 @@ const Main = () => {
 
             <div>
               <p className={montserrat.className}>9900 ₽</p>
-              <button className="button-orange">Купить</button>
+              <Link href="/tariffs" className="button-orange">
+                Купить
+              </Link>
               <p>оплата производится за месяц, общая cтоимость равнается</p>
             </div>
           </div>

@@ -20,18 +20,12 @@ export interface IDish {
   _id?: string;
   category: string;
   name: string;
-  image: string | null;
   weight: string;
+  price: string;
+  oldPrice: string;
+  calories: string;
+  proteinAndFatAndCarbohydrates: string;
+  preparationTime: string;
   description: string;
-  preparationTime: number;
-  calories: ICalories;
-  price: number;
-  newPrice: number | null;
-}
-
-interface ICalories {
-  total: number;
-  protein: number;
-  fat: number;
-  carbohydrates: number;
+  image: File | string;
 }

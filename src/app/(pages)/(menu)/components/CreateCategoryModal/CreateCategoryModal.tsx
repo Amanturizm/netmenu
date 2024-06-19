@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useLayoutEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { ICategory } from '@/app/(pages)/(menu)/types';
 import styles from './CreateCategoryModal.module.css';
@@ -6,6 +6,7 @@ import uploadImageIcon from '@/assets/images/upload-image.svg';
 
 interface Props {
   hideModal: () => void;
+  submitData(category: ICategory): Promise<void>;
 }
 
 const initialState: ICategory = {
@@ -14,12 +15,16 @@ const initialState: ICategory = {
   image: '',
 };
 
-const CreateCategoryModal: React.FC<Props> = ({ hideModal }) => {
+const CreateCategoryModal: React.FC<Props> = ({ hideModal, submitData }) => {
   const [state, setState] = useState<ICategory>(initialState);
 
   const [isDragOver, setIsDragOver] = useState<boolean>(false);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  useLayoutEffect(() => {
+    document.body.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
 
   const changeValue = (e: { target: { name: string; value?: string; files: FileList | null } }) => {
     const { name, value, files } = e.target;
@@ -27,10 +32,29 @@ const CreateCategoryModal: React.FC<Props> = ({ hideModal }) => {
     setState((prevState) => ({ ...prevState, [name]: files?.length ? files[0] : value }));
   };
 
-  const saveData = (e: React.FormEvent) => {
+  const saveData = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    console.log(state);
+    let isValid = true;
+
+    const keys = Object.keys(state) as Array<keyof ICategory>;
+    keys.forEach((key) => {
+      if (state[key] === '') {
+        isValid = false;
+      }
+    });
+
+    if (!isValid) {
+      return alert('Fill in all the fields!');
+    }
+
+    try {
+      await submitData(state);
+    } catch {
+      // nothing
+    } finally {
+      hideModal();
+    }
   };
 
   return (

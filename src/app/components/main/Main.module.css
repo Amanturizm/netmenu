@@ -192,7 +192,7 @@
   color: #868686;
 }
 
-.section_three_block div:last-child button {
+.section_three_block div:last-child a {
   font-family: var(--font-family-medium);
   font-weight: 400;
   font-size: 1.7vw;

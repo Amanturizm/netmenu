@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './DeleteModal.module.css';
+import styles from './DeleteMenuModal.module.css';
 import axiosApi from '@/app/axiosApi';
 
 interface Props {
@@ -9,10 +9,10 @@ interface Props {
   setNewData: () => void;
 }
 
-const DeleteModal: React.FC<Props> = ({ menu_id, menu_name, hideModal, setNewData }) => {
+const DeleteMenuModal: React.FC<Props> = ({ menu_id, menu_name, hideModal, setNewData }) => {
   const deleteMenu = async () => {
     try {
-      await axiosApi.delete('/menus/' + menu_id);
+      await axiosApi.delete('menus/' + menu_id);
 
       setNewData();
       hideModal();
@@ -44,4 +44,4 @@ const DeleteModal: React.FC<Props> = ({ menu_id, menu_name, hideModal, setNewDat
   );
 };
 
-export default DeleteModal;
+export default DeleteMenuModal;

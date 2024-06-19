@@ -10,7 +10,7 @@ import plusIcon from '@/assets/images/plus.png';
 import trashIcon from '@/assets/images/trash.svg';
 
 import Link from 'next/link';
-import DeleteModal from '@/app/(pages)/(menu)/components/DeleteModal/DeleteModal';
+import DeleteMenuModal from '@/app/(pages)/(profile)/components/delete-menu-modal/DeleteMenuModal';
 
 export interface MyMenusMenuState extends Omit<IMenu, 'address' | 'user' | 'wifiName' | 'wifiPassword'> {
   categoriesCount: number;
@@ -21,7 +21,7 @@ const fetchData = async (): Promise<MyMenusMenuState[]> => {
 
   return await Promise.all(
     data.map(async (menu) => {
-      const { data: categoriesCount } = await axiosApi.get<string>(`/categories/${menu._id}?onlyLength=true`);
+      const { data: categoriesCount } = await axiosApi.get<string>(`/categories/menu/${menu._id}?onlyLength=true`);
 
       return {
         ...menu,
@@ -98,7 +98,7 @@ const Page = () => {
       </div>
 
       {deletedMenu && (
-        <DeleteModal
+        <DeleteMenuModal
           menu_id={deletedMenu._id ?? ''}
           menu_name={deletedMenu.name}
           hideModal={() => setDeletedMenu(null)}
