@@ -300,3 +300,34 @@
   background-color: #fff;
   color: #ffa85e;
 }
+
+.dishes {
+  background-image: url('../../../../../assets/images/dishes-bg.png');
+  background-repeat: repeat-y;
+  background-position: top center;
+
+  width: 100%;
+  height: 100%;
+  min-height: 1900px;
+  padding: 23px 35px 60px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 44px;
+
+  width: 100%;
+}
+
+.dishes_amount {
+  font-family: var(--font-family-bold);
+  font-weight: 600;
+  font-size: 24px;
+
+  color: #fff;
+  width: min-content;
+  white-space: nowrap;
+  padding: 12px 27px;
+  border-radius: 58px;
+  background-color: #ff7c0d;
+  margin-top: 20px;
+}

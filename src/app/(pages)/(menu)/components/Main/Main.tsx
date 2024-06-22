@@ -15,15 +15,17 @@ import { useRouter, useSearchParams } from 'next/navigation';
 
 interface Props {
   menu_id: string;
+  groupName: string;
 }
 
-const fetchData = async (menu_id: string) => {
-  const { data: categories } = await axiosApi.get<ICategory[]>('/categories/menu/' + menu_id);
+const fetchData = async (menu_id: string, groupName: string) => {
+  const route = '/categories/menu/' + menu_id + '?groupName=' + groupName;
+  const { data: categories } = await axiosApi.get<ICategory[]>(route);
 
   return { categories };
 };
 
-const Main: React.FC<Props> = ({ menu_id }) => {
+const Main: React.FC<Props> = ({ menu_id, groupName }) => {
   const router = useRouter();
   const params = useSearchParams();
 
@@ -35,13 +37,11 @@ const Main: React.FC<Props> = ({ menu_id }) => {
   const [isCreateDishModal, setIsCreateDishModal] = useState<boolean>(false);
 
   useLayoutEffect(() => {
-    if (!categories.length) {
-      (async () => {
-        const { categories: data } = await fetchData(menu_id);
-        setCategories(data);
-      })();
-    }
-  }, [categories.length, menu_id]);
+    (async () => {
+      const { categories: data } = await fetchData(menu_id, groupName);
+      setCategories(data);
+    })();
+  }, [menu_id, groupName]);
 
   const createCategory = async (category: ICategory) => {
     try {
@@ -102,7 +102,7 @@ const Main: React.FC<Props> = ({ menu_id }) => {
       <div className={[styles.menu_categories, styles.section_wrapper].join(' ')}>
         {categories.map((category) => (
           <div
-            onClick={() => router.push('?category=' + category._id)}
+            onClick={() => router.push(`?groupName=${groupName}&category=${category._id}`)}
             className={styles.menu_category}
             style={{ backgroundImage: `url(${s3Url! + category.image})` }}
             key={category._id}
@@ -147,7 +147,11 @@ const Main: React.FC<Props> = ({ menu_id }) => {
         <CreateDishModal
           hideModal={() => setIsCreateDishModal(false)}
           submitData={createDish}
-          categories={categories}
+          menu_id={menu_id}
+          switchToCreateCategoryModal={() => {
+            setIsCreateDishModal(false);
+            setIsCreateCategoryModal(true);
+          }}
         />
       )}
     </>

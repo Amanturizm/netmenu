@@ -4,11 +4,14 @@ import Select from '@/app/(pages)/(menu)/components/UI/Select/Select';
 import { ICategory, IDish } from '@/app/(pages)/(menu)/types';
 import styles from './CreateDishModal.module.css';
 import uploadImageIcon from '@/assets/images/upload-image.svg';
+import axiosApi from '@/app/axiosApi';
+import { useRouter } from 'next/navigation';
 
 interface Props {
   hideModal: () => void;
   submitData(dish: IDish): Promise<void>;
-  categories: ICategory[];
+  menu_id: string;
+  switchToCreateCategoryModal: () => void;
 }
 
 const initialState: IDish = {
@@ -24,20 +27,39 @@ const initialState: IDish = {
   image: '',
 };
 
-const CreateDishModal: React.FC<Props> = ({ hideModal, submitData, categories }) => {
+const fetchData = async (menu_id: string) => {
+  const { data: categories } = await axiosApi.get<ICategory[]>(`/categories/menu/${menu_id}`);
+
+  return { categories };
+};
+
+const CreateDishModal: React.FC<Props> = ({ hideModal, submitData, menu_id, switchToCreateCategoryModal }) => {
+  const router = useRouter();
+
   const [state, setState] = useState<IDish>(initialState);
+
+  const [categories, setCategories] = useState<ICategory[]>([]);
 
   const [isDragOver, setIsDragOver] = useState<boolean>(false);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
-    document.body.scrollTo({ top: 0, behavior: 'smooth' });
+    if (categories.length) return;
 
-    if (categories.length) {
-      setState((prevState) => ({ ...prevState, category: categories[0]._id! }));
-    }
-  }, [categories]);
+    (async () => {
+      const { categories } = await fetchData(menu_id);
+
+      if (categories.length) {
+        document.body.scrollTo({ top: 0, behavior: 'smooth' });
+
+        setCategories(categories);
+        setState((prevState) => ({ ...prevState, category: categories[0]._id! }));
+      } else {
+        switchToCreateCategoryModal();
+      }
+    })();
+  }, [menu_id, categories, switchToCreateCategoryModal]);
 
   const formatNumericInput = (input: string): string => input.replace(/[^0-9]/g, '');
 
@@ -96,6 +118,8 @@ const CreateDishModal: React.FC<Props> = ({ hideModal, submitData, categories })
       hideModal();
     }
   };
+
+  if (!categories.length) return null;
 
   return (
     <>
@@ -193,7 +217,7 @@ const CreateDishModal: React.FC<Props> = ({ hideModal, submitData, categories })
         <div
           className={styles.drop_zone}
           onClick={() => fileInputRef.current?.click()}
-          onDragEnter={(e) => {
+          onDragOver={(e) => {
             e.preventDefault();
             e.stopPropagation();
             if (!isDragOver) setIsDragOver(true);

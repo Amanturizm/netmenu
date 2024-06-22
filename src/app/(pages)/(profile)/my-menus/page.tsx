@@ -51,7 +51,7 @@ const Page = () => {
     try {
       const { data } = await axiosApi.post('menus');
 
-      return router.push(`/menu/${data._id}`);
+      return router.push(`/menu/${data._id}?groupName=Еда`);
     } catch {
       // nothing
     }
@@ -86,7 +86,7 @@ const Page = () => {
             </div>
 
             <div>
-              <Link href={`/menu/${menu._id}`} className={[styles.go_to_menu, 'button-orange'].join(' ')}>
+              <Link href={`/menu/${menu._id}?groupName=Еда`} className={[styles.go_to_menu, 'button-orange'].join(' ')}>
                 Перейти
               </Link>
               <button onClick={() => setDeletedMenu(menu)}>

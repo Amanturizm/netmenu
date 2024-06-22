@@ -1,16 +1,17 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import axiosApi from '@/app/axiosApi';
+import Image from 'next/image';
 import { ICategory, IDish } from '@/app/(pages)/(menu)/types';
 import styles from './Dishes.module.css';
-import Image from 'next/image';
-import timeIcon from '@/assets/images/time.svg';
-import flashIcon from '@/assets/images/flash.svg';
-import dishEditIcon from '@/assets/images/dish-edit.svg';
 import dishesBgIcon from '@/assets/images/dishes-bg.png';
-import { s3Url } from '@/app/constants';
+import backIcon from '@/assets/images/back.svg';
+import { useRouter } from 'next/navigation';
+import Dish from '@/app/(pages)/(menu)/components/Dish/Dish';
 
 interface Props {
   categoryId: string;
+  menu_id: string;
+  groupName: string;
 }
 
 const fetchData = async (categoryId: string) => {
@@ -20,7 +21,9 @@ const fetchData = async (categoryId: string) => {
   return { category, dishes };
 };
 
-const Dishes: React.FC<Props> = ({ categoryId }) => {
+const Dishes: React.FC<Props> = ({ categoryId, menu_id, groupName }) => {
+  const router = useRouter();
+
   const [category, setCategory] = useState<ICategory | null>(null);
 
   const [dishes, setDishes] = useState<IDish[]>([]);
@@ -42,7 +45,7 @@ const Dishes: React.FC<Props> = ({ categoryId }) => {
         setBgRepeats(repeatCount);
       };
     }
-  }, [dishes.length, containerDishesRef.current]);
+  }, [dishes.length, containerDishesRef]);
 
   useLayoutEffect(() => {
     if (!category) {
@@ -56,63 +59,23 @@ const Dishes: React.FC<Props> = ({ categoryId }) => {
   }, [category, categoryId]);
 
   return (
-    category && (
-      <div className={styles.dishes_wrapper}>
-        <h2 className={styles.dishes_category_name}>{category.name}</h2>
+    <div className={styles.dishes_wrapper}>
+      <button className={styles.back} onClick={() => router.push('/menu/' + menu_id + '?groupName=' + groupName)}>
+        <Image src={backIcon.src} width={26} height={33} alt="back-icon" />
+      </button>
 
-        <div
-          ref={containerDishesRef}
-          style={{ backgroundSize: bgRepeats > 1 ? 'cover' : 'contain' }}
-          className={styles.dishes}
-        >
-          {dishes.map((dish) => (
-            <div className={styles.dish} key={dish._id}>
-              <Image className={styles.dish_image} src={s3Url! + dish.image} width={512} height={228} alt="dish-img" />
+      {category && <h2 className={styles.dishes_category_name}>{category.name}</h2>}
 
-              <div className={styles.dish_first_section}>
-                <h2 title={dish.name}>{dish.name}</h2>
-                <p title={dish.weight}>{dish.weight} г.</p>
-              </div>
-
-              <p className={styles.dish_description} title={dish.description}>
-                {dish.description}
-              </p>
-
-              <div className={styles.second_section}>
-                <h2>
-                  <Image src={timeIcon.src} width={48} height={48} alt="time-icon" />
-                  <span title={dish.preparationTime}>{dish.preparationTime}</span>мин
-                </h2>
-
-                <p>
-                  <Image src={flashIcon.src} width={48} height={48} alt="flash-icon" />
-                  {dish.calories} кКл/{' '}
-                  {(() => {
-                    const parts = dish.proteinAndFatAndCarbohydrates.split('/');
-                    return `${parts[0]}б/${parts[1] ?? '?'}ж/${parts[2] ?? '?'}уг`;
-                  })()}
-                </p>
-              </div>
-
-              <div className={styles.dish_buttons}>
-                <button className={styles.dish_edit_button}>
-                  Редактировать
-                  <Image src={dishEditIcon.src} width={30} height={30} alt="edit-icon" />
-                </button>
-                <div className={styles.dish_price}>
-                  {dish.oldPrice && (
-                    <>
-                      <span title={dish.oldPrice}>{dish.oldPrice + ' р.'}</span>
-                    </>
-                  )}
-                  <span title={dish.price}>{dish.price}</span>р.
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+      <div
+        ref={containerDishesRef}
+        style={{ backgroundSize: bgRepeats > 1 ? 'cover' : 'contain' }}
+        className={styles.dishes}
+      >
+        {dishes.map((dish) => (
+          <Dish dish={dish} key={dish._id} />
+        ))}
       </div>
-    )
+    </div>
   );
 };
 

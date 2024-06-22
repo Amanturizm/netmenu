@@ -1,7 +1,7 @@
 'use client';
 import Image from 'next/image';
 import React, { useLayoutEffect, useRef, useState } from 'react';
-import { IMenu } from '@/app/(pages)/(menu)/types';
+import { IDish, IMenu } from '@/app/(pages)/(menu)/types';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import axiosApi from '@/app/axiosApi';
 import { s3Url } from '@/app/constants';
@@ -16,6 +16,7 @@ import wifiIcon from '@/assets/images/wi-fi.png';
 import searchIcon from '@/assets/images/search.svg';
 import qrCodeIcon from '@/assets/images/qr-code.svg';
 import Dishes from '@/app/(pages)/(menu)/components/Dishes/Dishes';
+import Dish from '@/app/(pages)/(menu)/components/Dish/Dish';
 
 type State = Omit<IMenu, 'user' | '_id'>;
 
@@ -37,6 +38,7 @@ const Page = () => {
   const router = useRouter();
   const { menu_id } = useParams<{ menu_id: string }>();
   const categoryId = useSearchParams().get('category');
+  const queryGroupName = useSearchParams().get('groupName');
 
   const [fetchedData, setFetchedData] = useState<State | null>(null);
   const [menu, setMenu] = useState<State | null>(null);
@@ -45,7 +47,10 @@ const Page = () => {
 
   const [fieldsLoading, setFieldsLoading] = useState<Array<keyof State>>([]);
 
-  const [groupName, setGroupName] = useState<string>('Еда');
+  const [query, setQuery] = useState<string>('');
+  const [searchedDishes, setSearchedDishes] = useState<IDish[]>([]);
+
+  const [groupName, setGroupName] = useState<string>('');
 
   const getFilteredMenu = (data: State) => {
     const stateKeys = Object.keys(initialState) as Array<keyof State>;
@@ -60,21 +65,26 @@ const Page = () => {
   };
 
   useLayoutEffect(() => {
-    (async () => {
-      try {
-        const { menu: menuData } = await fetchData(menu_id);
+    if (queryGroupName) {
+      setGroupName(queryGroupName);
+    }
 
-        const filteredMenu = getFilteredMenu(menuData);
+    if (!fetchedData) {
+      (async () => {
+        try {
+          const { menu: menuData } = await fetchData(menu_id);
 
-        setFetchedData(filteredMenu);
+          const filteredMenu = getFilteredMenu(menuData);
 
-        setMenu(filteredMenu);
-      } catch (e) {
-        console.error(e);
-        router.push('/my-menus');
-      }
-    })();
-  }, [menu_id, router]);
+          setFetchedData(filteredMenu);
+
+          setMenu(filteredMenu);
+        } catch {
+          router.push('/my-menus');
+        }
+      })();
+    }
+  }, [queryGroupName, fetchedData, menu_id, router]);
 
   const changeValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -115,6 +125,16 @@ const Page = () => {
       setMenu((prevState) => prevState && { ...prevState, [name]: data[name] });
     } catch (e) {
       console.error(e);
+    }
+  };
+
+  const findDishForQuery = async (value: string) => {
+    try {
+      const { data } = await axiosApi.get<IDish[]>(`dishes/search/${menu_id}?query=${value}`);
+
+      setSearchedDishes(data);
+    } catch {
+      // nothing
     }
   };
 
@@ -293,29 +313,53 @@ const Page = () => {
         <div className={styles.menu_navigation}>
           <div className={styles.menu_navigation_search}>
             <Image src={searchIcon.src} width={30} height={30} alt="search-icon" />
-            <input type="text" placeholder="Поиск добавленного блюда" />
+            <input
+              type="text"
+              placeholder="Поиск добавленного блюда"
+              value={query}
+              onChange={(e) => {
+                const { value } = e.target;
+                setQuery(value);
+                findDishForQuery(value);
+              }}
+            />
           </div>
 
           <div className={styles.menu_navigation_tabs}>
             <div
               className={groupName === 'Еда' ? styles.in_active : undefined}
               style={{ padding: '11px 45px' }}
-              onClick={() => setGroupName('Еда')}
+              onClick={() => {
+                setQuery('');
+                router.push(`/menu/${menu_id}?groupName=Еда`, { scroll: false });
+              }}
             >
               Еда
             </div>
             <div
               className={groupName === 'Напитки' ? styles.in_active : undefined}
               style={{ padding: '11px 32px' }}
-              onClick={() => setGroupName('Напитки')}
+              onClick={() => {
+                setQuery('');
+                router.push(`/menu/${menu_id}?groupName=Напитки`, { scroll: false });
+              }}
             >
               Напитки
             </div>
           </div>
         </div>
 
-        {!categoryId && <Main menu_id={menu_id} />}
-        {categoryId && <Dishes categoryId={categoryId} />}
+        {query.length ? (
+          <div className={styles.dishes}>
+            <h2 className={styles.dishes_amount}>Найдено: {searchedDishes.length}</h2>
+            {searchedDishes.map((dish) => (
+              <Dish dish={dish} key={dish._id} />
+            ))}
+          </div>
+        ) : (
+          !categoryId && <Main menu_id={menu_id} groupName={groupName} />
+        )}
+        {categoryId && <Dishes categoryId={categoryId} menu_id={menu_id} groupName={groupName} />}
       </div>
 
       <button className={[styles.button_qr, 'button-orange'].join(' ')}>
