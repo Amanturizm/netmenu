@@ -12,7 +12,10 @@ const ProfileLayout = ({ children }: Readonly<Props>) => {
 
   useLayoutEffect(() => {
     const user = JSON.parse(localStorage.getItem('user') as string);
-    if (!user) return router.push('/sign-in');
+    if (!user || !user.email) {
+      localStorage.removeItem('user');
+      router.push('/sign-in');
+    }
   }, [router]);
 
   useEffect(() => void (document.body.style.backgroundColor = '#ffffff'), []);

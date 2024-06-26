@@ -9,9 +9,10 @@ import styles from './Dish.module.css';
 
 interface Props {
   dish: IDish;
+  setEditModal?: (dish: IDish) => void;
 }
 
-const Dish: React.FC<Props> = ({ dish }) => {
+const Dish: React.FC<Props> = ({ dish, setEditModal }) => {
   return (
     <div className={styles.dish}>
       <Image className={styles.dish_image} src={s3Url! + dish.image} width={512} height={228} alt="dish-img" />
@@ -42,10 +43,12 @@ const Dish: React.FC<Props> = ({ dish }) => {
       </div>
 
       <div className={styles.dish_buttons}>
-        <button className={styles.dish_edit_button}>
-          Редактировать
-          <Image src={dishEditIcon.src} width={30} height={30} alt="edit-icon" />
-        </button>
+        {setEditModal && (
+          <button className={styles.dish_edit_button} onClick={() => setEditModal(dish)}>
+            Редактировать
+            <Image src={dishEditIcon.src} width={30} height={30} alt="edit-icon" />
+          </button>
+        )}
         <div className={styles.dish_price}>
           <span title={dish.oldPrice}>{dish.oldPrice ? dish.oldPrice + ' р.' : ''}</span>
           <span title={dish.price}>{dish.price}</span>р.

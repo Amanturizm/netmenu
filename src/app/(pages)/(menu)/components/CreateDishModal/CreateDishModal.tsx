@@ -5,13 +5,14 @@ import { ICategory, IDish } from '@/app/(pages)/(menu)/types';
 import styles from './CreateDishModal.module.css';
 import uploadImageIcon from '@/assets/images/upload-image.svg';
 import axiosApi from '@/app/axiosApi';
-import { useRouter } from 'next/navigation';
+import DeleteDishModal from '@/app/(pages)/(menu)/components/DeleteDishModal/DeleteDishModal';
 
 interface Props {
   hideModal: () => void;
   submitData(dish: IDish): Promise<void>;
   menu_id: string;
   switchToCreateCategoryModal: () => void;
+  editableDish?: IDish;
 }
 
 const initialState: IDish = {
@@ -33,14 +34,20 @@ const fetchData = async (menu_id: string) => {
   return { categories };
 };
 
-const CreateDishModal: React.FC<Props> = ({ hideModal, submitData, menu_id, switchToCreateCategoryModal }) => {
-  const router = useRouter();
-
+const CreateDishModal: React.FC<Props> = ({
+  hideModal,
+  submitData,
+  menu_id,
+  switchToCreateCategoryModal,
+  editableDish,
+}) => {
   const [state, setState] = useState<IDish>(initialState);
 
   const [categories, setCategories] = useState<ICategory[]>([]);
 
   const [isDragOver, setIsDragOver] = useState<boolean>(false);
+
+  const [isDeleteModal, setIsDeleteModal] = useState<boolean>(false);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -54,12 +61,16 @@ const CreateDishModal: React.FC<Props> = ({ hideModal, submitData, menu_id, swit
         document.body.scrollTo({ top: 0, behavior: 'smooth' });
 
         setCategories(categories);
-        setState((prevState) => ({ ...prevState, category: categories[0]._id! }));
+        if (editableDish) {
+          setState(editableDish);
+        } else {
+          setState((prevState) => ({ ...prevState, category: categories[0]._id! }));
+        }
       } else {
         switchToCreateCategoryModal();
       }
     })();
-  }, [menu_id, categories, switchToCreateCategoryModal]);
+  }, [menu_id, categories, switchToCreateCategoryModal, editableDish]);
 
   const formatNumericInput = (input: string): string => input.replace(/[^0-9]/g, '');
 
@@ -99,8 +110,14 @@ const CreateDishModal: React.FC<Props> = ({ hideModal, submitData, menu_id, swit
 
     let isValid = true;
 
+    const editedState: IDish = { ...state };
+
     const keys = Object.keys(state) as Array<keyof IDish>;
     keys.forEach((key) => {
+      if (editableDish && state[key] === editableDish[key]) {
+        delete editedState[key];
+      }
+
       if (state[key] === '' && key !== 'oldPrice') {
         isValid = false;
       }
@@ -111,7 +128,7 @@ const CreateDishModal: React.FC<Props> = ({ hideModal, submitData, menu_id, swit
     }
 
     try {
-      await submitData(state);
+      await submitData(editableDish ? { ...editedState, _id: state._id } : state);
     } catch {
       // nothing
     } finally {
@@ -125,7 +142,7 @@ const CreateDishModal: React.FC<Props> = ({ hideModal, submitData, menu_id, swit
     <>
       <div className={styles.backdrop} onClick={hideModal}></div>
       <form autoComplete="off" className={styles.form} onSubmit={saveData}>
-        <h2>Добавить блюдо</h2>
+        <h2>{editableDish ? 'Редактировать' : 'Добавить'} блюдо</h2>
 
         <p className={styles.section_label}>Выбрать категорию</p>
         <Select
@@ -178,7 +195,7 @@ const CreateDishModal: React.FC<Props> = ({ hideModal, submitData, menu_id, swit
             <input
               type="text"
               name="oldPrice"
-              value={state.oldPrice}
+              value={state.oldPrice || ''}
               onChange={(e) => e.target.value.length <= 7 && changeValue(e)}
             />
           </div>
@@ -252,7 +269,7 @@ const CreateDishModal: React.FC<Props> = ({ hideModal, submitData, menu_id, swit
             <span>Прикрепить фото</span>
           </div>
 
-          {typeof state.image !== 'string' && <span className={styles.display_file}>{state.image.name}</span>}
+          {state.image instanceof File && <span className={styles.display_file}>{state.image.name}</span>}
 
           <input
             type="file"
@@ -268,10 +285,18 @@ const CreateDishModal: React.FC<Props> = ({ hideModal, submitData, menu_id, swit
           />
         </div>
 
-        <div className={styles.save_button}>
-          <button>Сохранить</button>
+        <div className={styles.buttons} style={{ justifyContent: editableDish ? 'space-between' : 'flex-end' }}>
+          {editableDish && (
+            <button className={styles.delete_button} type="button" onClick={() => setIsDeleteModal(true)}>
+              Удалить
+            </button>
+          )}
+          <button className={styles.save_button}>Сохранить</button>
         </div>
       </form>
+      {isDeleteModal && (
+        <DeleteDishModal dishId={state._id || ''} hideModal={() => setIsDeleteModal(false)} updateData={hideModal} />
+      )}
     </>
   );
 };

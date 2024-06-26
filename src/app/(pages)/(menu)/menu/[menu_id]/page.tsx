@@ -65,9 +65,7 @@ const Page = () => {
   };
 
   useLayoutEffect(() => {
-    if (queryGroupName) {
-      setGroupName(queryGroupName);
-    }
+    setGroupName(queryGroupName || 'Еда');
 
     if (!fetchedData) {
       (async () => {
@@ -320,7 +318,7 @@ const Page = () => {
               onChange={(e) => {
                 const { value } = e.target;
                 setQuery(value);
-                findDishForQuery(value);
+                void findDishForQuery(value);
               }}
             />
           </div>

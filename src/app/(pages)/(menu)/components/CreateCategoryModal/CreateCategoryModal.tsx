@@ -7,6 +7,7 @@ import uploadImageIcon from '@/assets/images/upload-image.svg';
 interface Props {
   hideModal: () => void;
   submitData(category: ICategory): Promise<void>;
+  editableCategory?: ICategory;
 }
 
 const initialState: ICategory = {
@@ -15,7 +16,7 @@ const initialState: ICategory = {
   image: '',
 };
 
-const CreateCategoryModal: React.FC<Props> = ({ hideModal, submitData }) => {
+const CreateCategoryModal: React.FC<Props> = ({ hideModal, submitData, editableCategory }) => {
   const [state, setState] = useState<ICategory>(initialState);
 
   const [isDragOver, setIsDragOver] = useState<boolean>(false);
@@ -24,7 +25,11 @@ const CreateCategoryModal: React.FC<Props> = ({ hideModal, submitData }) => {
 
   useLayoutEffect(() => {
     document.body.scrollTo({ top: 0, behavior: 'smooth' });
-  }, []);
+
+    if (editableCategory) {
+      setState(editableCategory);
+    }
+  }, [editableCategory]);
 
   const changeValue = (e: { target: { name: string; value?: string; files: FileList | null } }) => {
     const { name, value, files } = e.target;
@@ -37,8 +42,14 @@ const CreateCategoryModal: React.FC<Props> = ({ hideModal, submitData }) => {
 
     let isValid = true;
 
+    const editedState: ICategory = { ...state };
+
     const keys = Object.keys(state) as Array<keyof ICategory>;
     keys.forEach((key) => {
+      if (editableCategory && state[key] === editableCategory[key]) {
+        delete editedState[key];
+      }
+
       if (state[key] === '') {
         isValid = false;
       }
@@ -49,7 +60,7 @@ const CreateCategoryModal: React.FC<Props> = ({ hideModal, submitData }) => {
     }
 
     try {
-      await submitData(state);
+      await submitData(editableCategory ? { ...editedState, _id: state._id } : state);
     } catch {
       // nothing
     } finally {
@@ -61,7 +72,7 @@ const CreateCategoryModal: React.FC<Props> = ({ hideModal, submitData }) => {
     <>
       <div className={styles.backdrop} onClick={hideModal}></div>
       <form className={styles.form} onSubmit={saveData}>
-        <h2>Добавить категорию</h2>
+        <h2>{editableCategory ? 'Редактировать' : 'Добавить'} категорию</h2>
 
         <p className={styles.section_label}>Выберите группу</p>
         <div className={styles.menu_navigation_tabs}>
@@ -90,11 +101,12 @@ const CreateCategoryModal: React.FC<Props> = ({ hideModal, submitData }) => {
           onClick={() => fileInputRef.current?.click()}
           onDragOver={(e) => {
             e.preventDefault();
-            if (!isDragOver) {
-              setIsDragOver(true);
-            }
+            if (!isDragOver) setIsDragOver(true);
           }}
-          onDragLeave={() => isDragOver && setIsDragOver(false)}
+          onDragLeave={(e) => {
+            e.preventDefault();
+            if (isDragOver) setIsDragOver(false);
+          }}
           onDrop={(e) => {
             e.preventDefault();
             const { files } = e.dataTransfer;
@@ -120,7 +132,7 @@ const CreateCategoryModal: React.FC<Props> = ({ hideModal, submitData }) => {
             <span>Прикрепить фото</span>
           </div>
 
-          {typeof state.image !== 'string' && <span className={styles.display_file}>{state.image.name}</span>}
+          {state.image instanceof File && <span className={styles.display_file}>{state.image.name}</span>}
 
           <input
             type="file"

@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useCallback, useLayoutEffect, useState } from 'react';
 import Image from 'next/image';
 import addDishIcon from '@/assets/images/add-dish.svg';
 import addCategoryIcon from '@/assets/images/add-category.svg';
@@ -11,7 +11,7 @@ import { ICategory, IDish } from '@/app/(pages)/(menu)/types';
 import axiosApi from '@/app/axiosApi';
 import styles from './Main.module.css';
 import CreateDishModal from '@/app/(pages)/(menu)/components/CreateDishModal/CreateDishModal';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 interface Props {
   menu_id: string;
@@ -27,23 +27,24 @@ const fetchData = async (menu_id: string, groupName: string) => {
 
 const Main: React.FC<Props> = ({ menu_id, groupName }) => {
   const router = useRouter();
-  const params = useSearchParams();
 
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [isCreateCategoryModal, setIsCreateCategoryModal] = useState<boolean>(false);
-  const [editCategoryId, setEditCategoryId] = useState<string>('');
+  const [editableCategory, setEditableCategory] = useState<ICategory | null>(null);
   const [deleteCategoryId, setDeleteCategoryId] = useState<string>('');
 
   const [isCreateDishModal, setIsCreateDishModal] = useState<boolean>(false);
 
-  useLayoutEffect(() => {
-    (async () => {
-      const { categories: data } = await fetchData(menu_id, groupName);
-      setCategories(data);
-    })();
+  const fetchCategories = useCallback(async () => {
+    const { categories: data } = await fetchData(menu_id, groupName);
+    setCategories(data);
   }, [menu_id, groupName]);
 
-  const createCategory = async (category: ICategory) => {
+  useLayoutEffect(() => {
+    void fetchCategories();
+  }, [fetchCategories]);
+
+  const createCategory = async (category: ICategory, isEdit?: boolean) => {
     try {
       const formData = new FormData();
       const keys = Object.keys(category) as Array<keyof ICategory>;
@@ -54,9 +55,13 @@ const Main: React.FC<Props> = ({ menu_id, groupName }) => {
         }
       });
 
-      const { data } = await axiosApi.post<ICategory>('categories/' + menu_id, formData);
-
-      setCategories((prevState) => [...prevState, data]);
+      if (isEdit) {
+        await axiosApi.patch<ICategory>('categories/' + category._id, formData);
+        await fetchCategories();
+      } else {
+        const { data } = await axiosApi.post<ICategory>('categories/' + menu_id, formData);
+        setCategories((prevState) => [...prevState, data]);
+      }
     } catch {
       // nothing
     }
@@ -113,7 +118,7 @@ const Main: React.FC<Props> = ({ menu_id, groupName }) => {
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  setEditCategoryId(category._id || '');
+                  setEditableCategory(category);
                 }}
               >
                 <Image src={editCategoryIcon.src} width={18} height={18} alt="edit-icon" />
@@ -133,6 +138,13 @@ const Main: React.FC<Props> = ({ menu_id, groupName }) => {
 
       {isCreateCategoryModal && (
         <CreateCategoryModal hideModal={() => setIsCreateCategoryModal(false)} submitData={createCategory} />
+      )}
+      {editableCategory && (
+        <CreateCategoryModal
+          hideModal={() => setEditableCategory(null)}
+          submitData={(state) => createCategory(state, true)}
+          editableCategory={editableCategory}
+        />
       )}
       {deleteCategoryId && (
         <DeleteCategoryModal

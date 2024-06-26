@@ -122,24 +122,33 @@
   transform: translateX(-50%);
 }
 
-.save_button {
+.buttons {
   display: flex;
   justify-content: flex-end;
+  margin-top: 68px;
 }
 
-.save_button button {
+.buttons button {
   font-family: var(--font-family-bold);
   font-weight: 600;
   font-size: 20px;
   line-height: 30px;
-  color: #fff;
-
-  margin-top: 68px;
-  padding: 9px 30px;
   border-radius: 12px;
-  background-color: #ffa85e;
 }
 
-.save_button button:hover {
+.delete_button {
+  color: #ff9e2d;
+  background-color: #ffc899;
+  padding: 9px 41.5px;
+  border: 1px solid #ff9e2d;
+}
+
+.save_button {
+  color: #fff;
+  background-color: #ffa85e;
+  padding: 9px 30px;
+}
+
+.save_button:hover {
   background-color: #ffad75;
 }
