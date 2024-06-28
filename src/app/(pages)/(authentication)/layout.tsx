@@ -1,9 +1,9 @@
 'use client';
 import React, { useLayoutEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Header from '@/app/(pages)/(authentication)/components/header/Header';
 import Footer from '@/app/components/footer/Footer';
 import styles from './authentication.module.css';
-import { useRouter } from 'next/navigation';
 
 interface Props {
   children: React.ReactNode;
