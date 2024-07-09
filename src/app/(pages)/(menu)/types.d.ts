@@ -6,6 +6,7 @@ export interface IMenu {
   address: string | null;
   wifiName: string | null;
   wifiPassword: string | null;
+  qrCodeImage?: string;
 }
 
 export interface ICategory {

@@ -17,6 +17,7 @@ import searchIcon from '@/assets/images/search.svg';
 import qrCodeIcon from '@/assets/images/qr-code.svg';
 import Dishes from '@/app/(pages)/(menu)/components/Dishes/Dishes';
 import Dish from '@/app/(pages)/(menu)/components/Dish/Dish';
+import QRCodeModal from '@/app/(pages)/(menu)/components/QRCodeModal/QRCodeModal';
 
 type State = Omit<IMenu, 'user' | '_id'>;
 
@@ -29,7 +30,7 @@ const initialState: State = {
 };
 
 const fetchData = async (menu_id: string) => {
-  const { data: menu } = await axiosApi.get<State>('/menus/' + menu_id);
+  const { data: menu } = await axiosApi.get<IMenu>('/menus/' + menu_id);
 
   return { menu };
 };
@@ -52,13 +53,16 @@ const Page = () => {
 
   const [groupName, setGroupName] = useState<string>('');
 
+  const [qrImage, setQrImage] = useState<string>('');
+  const [qrIsOpen, setQrIsOpen] = useState<boolean>(false);
+
   const getFilteredMenu = (data: State) => {
     const stateKeys = Object.keys(initialState) as Array<keyof State>;
 
     const filteredMenu: State = initialState;
 
     stateKeys.forEach((key: keyof State) => {
-      filteredMenu[key] = data[key];
+      filteredMenu[key] = data[key]!;
     });
 
     return filteredMenu;
@@ -77,6 +81,7 @@ const Page = () => {
           setFetchedData(filteredMenu);
 
           setMenu(filteredMenu);
+          setQrImage(menuData.qrCodeImage!);
         } catch {
           router.push('/my-menus');
         }
@@ -360,10 +365,12 @@ const Page = () => {
         {categoryId && <Dishes categoryId={categoryId} menu_id={menu_id} groupName={groupName} />}
       </div>
 
-      <button className={[styles.button_qr, 'button-orange'].join(' ')}>
+      <button onClick={() => setQrIsOpen(true)} className={[styles.button_qr, 'button-orange'].join(' ')}>
         <span>Открыть QR</span>
         <Image src={qrCodeIcon.src} width={38} height={38} alt="qr-code-icon" />
       </button>
+
+      {qrIsOpen && <QRCodeModal url={s3Url + qrImage} hideModal={() => setQrIsOpen(false)} />}
     </div>
   );
 };
