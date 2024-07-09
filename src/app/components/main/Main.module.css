@@ -201,3 +201,28 @@
 
   padding: 0.6vw 3.2vw;
 }
+
+@media screen and (max-width: 1200px) {
+  .section_one {
+    padding: 130px 60px;
+  }
+
+  .section_one_smart_phone {
+    right: 80px;
+    width: 260px;
+    height: 450px;
+  }
+}
+
+@media screen and (max-width: 992px) {
+  .section_one {
+    padding: 130px 60px;
+    border-radius: 0;
+  }
+
+  .section_one_smart_phone {
+    right: 80px;
+    width: 260px;
+    height: 450px;
+  }
+}
