@@ -30,7 +30,7 @@ const Header = () => {
     return () => {
       window.removeEventListener('resize', setBurgerMenu);
     };
-  }, []);
+  }, [isBurgerMenu]);
 
   return (
     <header className={[styles.header, 'wrapper'].join(' ')}>
