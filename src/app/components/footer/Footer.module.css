@@ -43,3 +43,20 @@
   font-size: 1.1vw;
   text-align: center;
 }
+
+@media screen and (max-width: 578px) {
+  .footer_content {
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .footer_contacts {
+    align-items: center;
+    margin-top: 2.9vh;
+  }
+
+  .footer_info {
+    margin-top: 3.9vh;
+    margin-bottom: 2.9vh;
+  }
+}
