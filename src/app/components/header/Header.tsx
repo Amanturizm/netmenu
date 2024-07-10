@@ -20,17 +20,16 @@ const Header = () => {
   useLayoutEffect(() => {
     setUser(JSON.parse(localStorage.getItem('user') as string) || null);
 
-    setIsBurgerMenu(window.innerWidth <= 578 && !isBurgerMenu);
+    setIsBurgerMenu(window.innerWidth <= 578);
 
-    const setBurgerMenu = (e: Event) =>
-      setIsBurgerMenu((e.target as { innerWidth: number } | null)!.innerWidth <= 578 && !isBurgerMenu);
+    const setBurgerMenu = (e: Event) => setIsBurgerMenu((e.target as { innerWidth: number } | null)!.innerWidth <= 578);
 
     window.addEventListener('resize', setBurgerMenu);
 
     return () => {
       window.removeEventListener('resize', setBurgerMenu);
     };
-  }, [isBurgerMenu]);
+  }, []);
 
   return (
     <header className={[styles.header, 'wrapper'].join(' ')}>
