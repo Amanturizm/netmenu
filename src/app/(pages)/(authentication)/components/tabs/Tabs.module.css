@@ -32,3 +32,12 @@
 .in_active span {
   color: #ffa85e;
 }
+
+@media screen and (max-width: 578px) {
+  .tabs a {
+    font-size: 20px;
+    line-height: 30px;
+    padding: 6px 11px;
+    gap: 4px;
+  }
+}

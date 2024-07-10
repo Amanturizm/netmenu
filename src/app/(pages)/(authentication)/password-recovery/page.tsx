@@ -39,9 +39,7 @@ const Page = () => {
             required
           />
 
-          <button className={[auth_styles.submit_button, 'button-orange'].join(' ')} style={{ padding: '12px 52px' }}>
-            Восстановить пароль
-          </button>
+          <button className={[auth_styles.submit_button, 'button-orange'].join(' ')}>Восстановить пароль</button>
         </form>
       </div>
     </>

@@ -37,3 +37,13 @@
   border-radius: 50px;
   border: 1px solid #fff;
 }
+
+@media screen and (max-width: 578px) {
+  .navbar {
+    justify-content: center;
+  }
+
+  .navbar_tools {
+    display: none;
+  }
+}

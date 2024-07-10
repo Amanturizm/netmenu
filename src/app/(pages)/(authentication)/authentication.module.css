@@ -14,7 +14,8 @@
   background-color: #d4d4d41a;
   backdrop-filter: blur(20px);
   padding: 40px 64px 64px;
-  width: 574px;
+  max-width: 574px;
+  width: 100%;
   margin: 52px auto 0;
   display: flex;
   flex-direction: column;
@@ -45,4 +46,37 @@
 
 .submit_button {
   margin: 40px auto 0;
+  padding: 12px 52px;
+}
+
+@media screen and (max-width: 578px) {
+  .bg_wrapper {
+    padding: 0 32px 102px;
+  }
+
+  .auth_block {
+    padding: 28px 29px 32px 28px;
+    margin: 24px auto 0;
+    display: flex;
+    flex-direction: column;
+    color: #fff;
+  }
+
+  .auth_block h2 {
+    font-size: 24px;
+    line-height: 29px;
+    margin-bottom: 8px;
+  }
+
+  .link_password_recovery {
+    font-size: 12px;
+    line-height: 14px;
+  }
+
+  .submit_button {
+    margin: 32px auto 0;
+    font-size: 16px;
+    line-height: 24px;
+    padding: 8px 21px;
+  }
 }

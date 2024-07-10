@@ -22,3 +22,16 @@
   border-radius: 10px;
   padding: 0 10px;
 }
+
+@media screen and (max-width: 578px) {
+  .text_field {
+    margin-top: 16px;
+  }
+
+  .text_field span {
+    font-size: 12px;
+    line-height: 14px;
+    letter-spacing: -0.5px;
+    white-space: nowrap;
+  }
+}
