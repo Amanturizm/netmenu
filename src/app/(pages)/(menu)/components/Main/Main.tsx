@@ -12,6 +12,7 @@ import axiosApi from '@/app/axiosApi';
 import styles from './Main.module.css';
 import CreateDishModal from '@/app/(pages)/(menu)/components/CreateDishModal/CreateDishModal';
 import { useRouter } from 'next/navigation';
+import Preloader from '@/app/components/UI/Preloader/Preloader';
 
 interface Props {
   menu_id: string;
@@ -29,6 +30,8 @@ const Main: React.FC<Props> = ({ menu_id, groupName }) => {
   const router = useRouter();
 
   const [categories, setCategories] = useState<ICategory[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const [isCreateCategoryModal, setIsCreateCategoryModal] = useState<boolean>(false);
   const [editableCategory, setEditableCategory] = useState<ICategory | null>(null);
   const [deleteCategoryId, setDeleteCategoryId] = useState<string>('');
@@ -41,7 +44,9 @@ const Main: React.FC<Props> = ({ menu_id, groupName }) => {
   }, [menu_id, groupName]);
 
   useLayoutEffect(() => {
-    void fetchCategories();
+    setIsLoading(true);
+
+    void fetchCategories().finally(() => setIsLoading(false));
   }, [fetchCategories]);
 
   const createCategory = async (category: ICategory, isEdit?: boolean) => {
@@ -134,6 +139,8 @@ const Main: React.FC<Props> = ({ menu_id, groupName }) => {
             </div>
           </div>
         ))}
+
+        {isLoading && <Preloader align="center" scale={1.3} margin="40px 0 0" />}
       </div>
 
       {isCreateCategoryModal && (

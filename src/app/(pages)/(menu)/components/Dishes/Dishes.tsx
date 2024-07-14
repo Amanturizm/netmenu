@@ -8,6 +8,7 @@ import backIcon from '@/assets/images/back.svg';
 import { useRouter } from 'next/navigation';
 import Dish from '@/app/(pages)/(menu)/components/Dish/Dish';
 import CreateDishModal from '@/app/(pages)/(menu)/components/CreateDishModal/CreateDishModal';
+import Preloader from '@/app/components/UI/Preloader/Preloader';
 
 interface Props {
   categoryId: string;
@@ -28,6 +29,8 @@ const Dishes: React.FC<Props> = ({ categoryId, menu_id, groupName }) => {
   const [category, setCategory] = useState<ICategory | null>(null);
 
   const [dishes, setDishes] = useState<IDish[]>([]);
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [editableDish, setEditableDish] = useState<IDish | null>(null);
 
@@ -59,7 +62,8 @@ const Dishes: React.FC<Props> = ({ categoryId, menu_id, groupName }) => {
 
   useLayoutEffect(() => {
     if (!category) {
-      void fetchDishes();
+      setIsLoading(true);
+      void fetchDishes().finally(() => setIsLoading(false));
     }
   }, [category, fetchDishes]);
 
@@ -98,6 +102,12 @@ const Dishes: React.FC<Props> = ({ categoryId, menu_id, groupName }) => {
           {dishes.map((dish) => (
             <Dish dish={dish} key={dish._id} setEditModal={setEditableDish} />
           ))}
+
+          {isLoading && (
+            <div style={{ transform: 'translateY(-90px)' }}>
+              <Preloader margin="0 410px" scale={1.3} color="#ff7c0d" />
+            </div>
+          )}
         </div>
       </div>
 

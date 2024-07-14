@@ -11,6 +11,7 @@ import trashIcon from '@/assets/images/trash.svg';
 
 import Link from 'next/link';
 import DeleteMenuModal from '@/app/(pages)/(profile)/components/delete-menu-modal/DeleteMenuModal';
+import Preloader from '@/app/components/UI/Preloader/Preloader';
 
 export interface MyMenusMenuState extends Omit<IMenu, 'address' | 'user' | 'wifiName' | 'wifiPassword'> {
   categoriesCount: number;
@@ -36,13 +37,19 @@ const Page = () => {
 
   const [menus, setMenus] = useState<MyMenusMenuState[]>([]);
 
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const [deletedMenu, setDeletedMenu] = useState<MyMenusMenuState | null>();
 
   useLayoutEffect(() => {
     if (!menus.length) {
       (async () => {
+        setIsLoading(true);
+
         const data = await fetchData();
         setMenus(data);
+
+        setIsLoading(false);
       })();
     }
   }, [menus.length]);
@@ -96,6 +103,8 @@ const Page = () => {
           </div>
         ))}
       </div>
+
+      {isLoading && <Preloader scale={1.3} margin="10%" align="center" />}
 
       {deletedMenu && (
         <DeleteMenuModal
