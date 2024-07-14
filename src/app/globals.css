@@ -75,6 +75,10 @@ a {
 }
 
 @media screen and (max-width: 578px) {
+  body {
+    background-color: #fff !important;
+  }
+
   .wrapper {
     padding: 33px 7vw 28px;
   }
@@ -83,5 +87,17 @@ a {
     font-size: 20px;
     padding: 8px 20px;
     margin: 10px auto 0;
+  }
+
+  .mobile_white_bg {
+    background: linear-gradient(to bottom, #fff 0%, #fff 50%, #d9d9d9 70%, #fff 95%);
+    padding-bottom: 0 !important;
+  }
+
+  .button-orange {
+    font-size: 24px !important;
+    line-height: 36px !important;
+    padding: 8px 50px !important;
+    border-radius: 30px !important;
   }
 }

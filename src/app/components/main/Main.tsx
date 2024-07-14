@@ -5,6 +5,7 @@ import smartPhoneIcon from '@/assets/images/smart-phone-02.svg';
 import smartPhoneMoneyIcon01 from '@/assets/images/smart-phone-icon-01.png';
 import smartPhoneMoneyIcon02 from '@/assets/images/smart-phone-icon-02.png';
 import smartPhoneMoneyIcon03 from '@/assets/images/smart-phone-icon-03.png';
+import phoheMobile from '@/assets/images/image.png';
 import Link from 'next/link';
 
 const montserrat = Montserrat({ weight: ['400'], style: 'normal', subsets: ['latin'] });
@@ -12,7 +13,7 @@ const montserrat = Montserrat({ weight: ['400'], style: 'normal', subsets: ['lat
 const Main = () => {
   return (
     <main>
-      <section className="wrapper">
+      <section className="wrapper mobile_white_bg">
         <div className={styles.section_one}>
           <div className={styles.section_one_info}>
             <h1 className={styles.section_one_title}>
@@ -56,98 +57,106 @@ const Main = () => {
           </div>
         </div>
 
+        <div className={styles.phone_mobile_wrapper}>
+          <Image className={styles.phohe_mobile} src={phoheMobile} unoptimized alt="smart-phone-icon" />
+        </div>
+
         <div className={styles.section_one_bottom_item}></div>
       </section>
 
-      <section className={['wrapper', styles.section_two].join(' ')}>
-        <div className={styles.section_two_block}>
-          <h1>Удобство</h1>
-          <p>Работать с QR меню проще. Загружается меню быстрее. Полезной информации в меню больше.</p>
-        </div>
-
-        <div className={styles.section_two_block}>
-          <h1>Безопасность</h1>
-          <p>
-            QR меню позволяет избежать физического контакта с бумажными меню и повышает уровень гигиены для посетителей
-            заведения
-          </p>
-        </div>
-
-        <div className={styles.section_two_block}>
-          <h1>Экономичность</h1>
-          <p>
-            QR меню помогает сократить расходы на печать и обновление бумажных меню, что благоприятно сказывается на
-            окружающей среде.
-          </p>
-        </div>
-      </section>
-
-      <section className={['wrapper', styles.section_three].join(' ')}>
-        <h1>
-          <strong>ЛУЧШИЕ</strong>
-          <br />
-          предложения
-        </h1>
-
-        <div className={styles.section_three_blocks}>
-          <div className={styles.section_three_block}>
-            <div>
-              <h1>
-                QR MENU
-                <br />
-                BASIC
-              </h1>
-              <h2>1 МЕСЯЦ</h2>
-            </div>
-
-            <div>
-              <p className={montserrat.className}>9900 ₽</p>
-              <Link href="/tariffs" className="button-orange">
-                Купить
-              </Link>
-              <p>оплата производится за месяц, общая cтоимость равнается</p>
-            </div>
+      <div className={styles.mobile_backgraund}>
+        <section className={['wrapper', styles.section_two].join(' ')}>
+          <div className={styles.section_two_block}>
+            <h1>Удобство</h1>
+            <p>Работать с QR меню проще. Загружается меню быстрее. Полезной информации в меню больше.</p>
           </div>
 
-          <div className={styles.section_three_block}>
-            <div>
-              <h1>
-                QR MENU
-                <br />
-                SUPER
-              </h1>
-              <h2>3 МЕСЯЦА</h2>
-            </div>
-
-            <div>
-              <p className={montserrat.className}>9900 ₽</p>
-              <Link href="/tariffs" className="button-orange">
-                Купить
-              </Link>
-              <p>оплата производится за месяц, общая cтоимость равнается</p>
-            </div>
+          <div className={styles.section_two_block}>
+            <h1>Безопасность</h1>
+            <p>
+              QR меню позволяет избежать физического контакта с бумажными меню и повышает уровень гигиены для
+              посетителей заведения
+            </p>
           </div>
 
-          <div className={styles.section_three_block}>
-            <div>
-              <h1>
-                QR MENU
-                <br />
-                ULTRA
-              </h1>
-              <h2>6 МЕСЯЦЕВ</h2>
+          <div className={styles.section_two_block}>
+            <h1>Экономичность</h1>
+            <p>
+              QR меню помогает сократить расходы на печать и обновление бумажных меню, что благоприятно сказывается на
+              окружающей среде.
+            </p>
+          </div>
+        </section>
+      </div>
+
+      <div className={styles.modile_footer_line}>
+        <section className={['wrapper', styles.mobile_backgraund, styles.section_three].join(' ')}>
+          <h1 className={styles.mobile_title}>
+            <strong>ЛУЧШИЕ</strong>
+            <br />
+            предложения
+          </h1>
+
+          <div className={styles.section_three_blocks}>
+            <div className={styles.section_three_block}>
+              <div>
+                <h1>
+                  QR MENU
+                  <br />
+                  BASIC
+                </h1>
+                <h2>1 МЕСЯЦ</h2>
+              </div>
+
+              <div>
+                <p className={montserrat.className}>9900 ₽</p>
+                <Link href="/tariffs" className="button-orange">
+                  Купить
+                </Link>
+                <p>оплата производится за месяц, общая cтоимость равнается</p>
+              </div>
             </div>
 
-            <div>
-              <p className={montserrat.className}>9900 ₽</p>
-              <Link href="/tariffs" className="button-orange">
-                Купить
-              </Link>
-              <p>оплата производится за месяц, общая cтоимость равнается</p>
+            <div className={styles.section_three_block}>
+              <div>
+                <h1>
+                  QR MENU
+                  <br />
+                  SUPER
+                </h1>
+                <h2>3 МЕСЯЦА</h2>
+              </div>
+
+              <div>
+                <p className={montserrat.className}>9900 ₽</p>
+                <Link href="/tariffs" className="button-orange">
+                  Купить
+                </Link>
+                <p>оплата производится за месяц, общая cтоимость равнается</p>
+              </div>
+            </div>
+
+            <div className={styles.section_three_block}>
+              <div>
+                <h1>
+                  QR MENU
+                  <br />
+                  ULTRA
+                </h1>
+                <h2>6 МЕСЯЦЕВ</h2>
+              </div>
+
+              <div>
+                <p className={montserrat.className}>9900 ₽</p>
+                <Link href="/tariffs" className="button-orange">
+                  Купить
+                </Link>
+                <p>оплата производится за месяц, общая cтоимость равнается</p>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
     </main>
   );
 };
