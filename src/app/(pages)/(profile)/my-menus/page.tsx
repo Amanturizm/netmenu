@@ -47,10 +47,8 @@ const Page = () => {
       (async () => {
         setIsLoading(true);
 
-        const data = await fetchData();
+        const data = await fetchData().finally(() => setIsLoading(false));
         setMenus(data);
-
-        setIsLoading(false);
       })();
     }
   }, [menus.length]);
