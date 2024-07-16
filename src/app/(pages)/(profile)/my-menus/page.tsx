@@ -38,6 +38,7 @@ const Page = () => {
   const [menus, setMenus] = useState<MyMenusMenuState[]>([]);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [createIsLoading, setCreateIsLoading] = useState<boolean>(false);
 
   const [deletedMenu, setDeletedMenu] = useState<MyMenusMenuState | null>();
 
@@ -56,11 +57,14 @@ const Page = () => {
 
   const createMenu = async () => {
     try {
+      setCreateIsLoading(true);
       const { data } = await axiosApi.post('menus');
 
       return router.push(`/menu/${data._id}?groupName=Еда`);
     } catch {
       // nothing
+    } finally {
+      setCreateIsLoading(false);
     }
   };
 
@@ -69,42 +73,57 @@ const Page = () => {
       <div className={styles.title_block}>
         <h2>Ваши меню</h2>
 
-        <button className={[styles.add_button, 'button-orange'].join(' ')} onClick={createMenu}>
-          <span>Добавить</span>
-          <Image src={plusIcon.src} width={20} height={20} alt="plus" />
+        <button
+          className={[styles.add_button, 'button-orange'].join(' ')}
+          disabled={createIsLoading}
+          onClick={createMenu}
+        >
+          {createIsLoading ? (
+            <Preloader color="#fff" scale={0.7} />
+          ) : (
+            <>
+              <span>Добавить</span>
+              <Image src={plusIcon.src} width={20} height={20} alt="plus" />
+            </>
+          )}
         </button>
       </div>
 
-      <div className={styles.menus}>
-        {menus.map((menu) => (
-          <div className={styles.menu} key={menu._id}>
-            <div>
-              {menu.image ? (
-                <Image src={s3Url + menu.image} width={42} height={42} unoptimized alt="menu-photo" />
-              ) : (
-                <div className={styles.not_image}></div>
-              )}
-              <p title={menu.name || undefined}>{menu.name || 'Без названия'}</p>
-            </div>
+      {isLoading ? (
+        <Preloader scale={1.3} margin="10%" align="center" />
+      ) : (
+        <div className={styles.menus}>
+          {menus.map((menu) => (
+            <div className={styles.menu} key={menu._id}>
+              <div>
+                {menu.image ? (
+                  <Image src={s3Url + menu.image} width={42} height={42} unoptimized alt="menu-photo" />
+                ) : (
+                  <div className={styles.not_image}></div>
+                )}
+                <p title={menu.name || undefined}>{menu.name || 'Без названия'}</p>
+              </div>
 
-            <div>
-              <h2>{menu.categoriesCount}</h2>
-              <p>категорий блюд</p>
-            </div>
+              <div>
+                <h2>{menu.categoriesCount}</h2>
+                <p>категорий блюд</p>
+              </div>
 
-            <div>
-              <Link href={`/menu/${menu._id}?groupName=Еда`} className={[styles.go_to_menu, 'button-orange'].join(' ')}>
-                Перейти
-              </Link>
-              <button onClick={() => setDeletedMenu(menu)}>
-                <Image src={trashIcon.src} width={26} height={26} alt="trash-icon" />
-              </button>
+              <div>
+                <Link
+                  href={`/menu/${menu._id}?groupName=Еда`}
+                  className={[styles.go_to_menu, 'button-orange'].join(' ')}
+                >
+                  Перейти
+                </Link>
+                <button onClick={() => setDeletedMenu(menu)}>
+                  <Image src={trashIcon.src} width={26} height={26} alt="trash-icon" />
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
-
-      {isLoading && <Preloader scale={1.3} margin="10%" align="center" />}
+          ))}
+        </div>
+      )}
 
       {deletedMenu && (
         <DeleteMenuModal
@@ -113,8 +132,10 @@ const Page = () => {
           hideModal={() => setDeletedMenu(null)}
           setNewData={() =>
             (async () => {
+              setIsLoading(true);
               const data = await fetchData();
               setMenus(data);
+              setIsLoading(false);
             })()
           }
         />

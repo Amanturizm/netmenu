@@ -5,21 +5,27 @@ import TextField from '@/app/components/UI/TextField/TextField';
 import auth_styles from '../authentication.module.css';
 import axiosApi from '@/app/axiosApi';
 import Tabs from '@/app/(pages)/(authentication)/components/tabs/Tabs';
+import Preloader from '@/app/components/UI/Preloader/Preloader';
 
 const Page = () => {
   const router = useRouter();
 
   const [state, setState] = useState<string>('');
 
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const sendData = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
+      setIsLoading(true);
       await axiosApi.post('users/password-reset', { email: state });
 
       router.push('/password-recovery-confirmation');
     } catch {
       // noting
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -39,7 +45,9 @@ const Page = () => {
             required
           />
 
-          <button className={[auth_styles.submit_button, 'button-orange'].join(' ')}>Восстановить пароль</button>
+          <button className={[auth_styles.submit_button, 'button-orange'].join(' ')} disabled={isLoading}>
+            {isLoading ? <Preloader color="#fff" scale={0.8} /> : 'Восстановить пароль'}
+          </button>
         </form>
       </div>
     </>

@@ -49,6 +49,10 @@
   padding: 12px 52px;
 }
 
+.submit_button:disabled {
+  padding: 12px 70px;
+}
+
 @media screen and (max-width: 578px) {
   .bg_wrapper {
     padding: 0 32px 102px;

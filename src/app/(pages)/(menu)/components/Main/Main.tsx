@@ -31,6 +31,7 @@ const Main: React.FC<Props> = ({ menu_id, groupName }) => {
 
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [categoriesForCreateDishIsLoading, setCategoriesForCreateDishIsLoading] = useState<boolean>(false);
 
   const [isCreateCategoryModal, setIsCreateCategoryModal] = useState<boolean>(false);
   const [editableCategory, setEditableCategory] = useState<ICategory | null>(null);
@@ -64,8 +65,10 @@ const Main: React.FC<Props> = ({ menu_id, groupName }) => {
         await axiosApi.patch<ICategory>('categories/' + category._id, formData);
         await fetchCategories();
       } else {
-        const { data } = await axiosApi.post<ICategory>('categories/' + menu_id, formData);
-        setCategories((prevState) => [...prevState, data]);
+        await axiosApi.post<ICategory>('categories/' + menu_id, formData);
+
+        setIsLoading(true);
+        void fetchCategories().finally(() => setIsLoading(false));
       }
     } catch {
       // nothing
@@ -96,8 +99,9 @@ const Main: React.FC<Props> = ({ menu_id, groupName }) => {
         <button
           className={[styles.menu_add_dish_button, 'button-orange'].join(' ')}
           onClick={() => setIsCreateDishModal(true)}
+          disabled={categoriesForCreateDishIsLoading}
         >
-          <span>Добавить блюдо</span>
+          {categoriesForCreateDishIsLoading ? <Preloader color="#fff" scale={0.7} /> : <span>Добавить блюдо</span>}
           <Image src={addDishIcon.src} width={28} height={28} alt="add-dish-icon" />
         </button>
         <button
@@ -109,39 +113,41 @@ const Main: React.FC<Props> = ({ menu_id, groupName }) => {
         </button>
       </div>
 
-      <div className={[styles.menu_categories, styles.section_wrapper].join(' ')}>
-        {categories.map((category) => (
-          <div
-            onClick={() => router.push(`?groupName=${groupName}&category=${category._id}`)}
-            className={styles.menu_category}
-            style={{ backgroundImage: `url(${s3Url! + category.image})` }}
-            key={category._id}
-          >
-            <p>{category.name}</p>
+      {isLoading ? (
+        <Preloader align="center" scale={1.3} margin="40px 0 0" />
+      ) : (
+        <div className={[styles.menu_categories, styles.section_wrapper].join(' ')}>
+          {categories.map((category) => (
+            <div
+              onClick={() => router.push(`?groupName=${groupName}&category=${category._id}`)}
+              className={styles.menu_category}
+              style={{ backgroundImage: `url(${s3Url! + category.image})` }}
+              key={category._id}
+            >
+              <p>{category.name}</p>
 
-            <div className={styles.category_buttons}>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setEditableCategory(category);
-                }}
-              >
-                <Image src={editCategoryIcon.src} width={18} height={18} alt="edit-icon" />
-              </button>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setDeleteCategoryId(category._id || '');
-                }}
-              >
-                <Image src={deleteCategoryIcon.src} width={18} height={18} alt="delete-icon" />
-              </button>
+              <div className={styles.category_buttons}>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setEditableCategory(category);
+                  }}
+                >
+                  <Image src={editCategoryIcon.src} width={18} height={18} alt="edit-icon" />
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setDeleteCategoryId(category._id || '');
+                  }}
+                >
+                  <Image src={deleteCategoryIcon.src} width={18} height={18} alt="delete-icon" />
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
-
-        {isLoading && <Preloader align="center" scale={1.3} margin="40px 0 0" />}
-      </div>
+          ))}
+        </div>
+      )}
 
       {isCreateCategoryModal && (
         <CreateCategoryModal hideModal={() => setIsCreateCategoryModal(false)} submitData={createCategory} />
@@ -171,6 +177,7 @@ const Main: React.FC<Props> = ({ menu_id, groupName }) => {
             setIsCreateDishModal(false);
             setIsCreateCategoryModal(true);
           }}
+          setCategoriesForCreateDishIsLoading={setCategoriesForCreateDishIsLoading}
         />
       )}
     </>

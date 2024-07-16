@@ -7,6 +7,7 @@ import TextField from '@/app/components/UI/TextField/TextField';
 import { Authentication } from '@/app/(pages)/(authentication)/types';
 import auth_styles from '../authentication.module.css';
 import Tabs from '@/app/(pages)/(authentication)/components/tabs/Tabs';
+import Preloader from '@/app/components/UI/Preloader/Preloader';
 
 const initialState: Authentication = {
   email: '',
@@ -16,6 +17,8 @@ const initialState: Authentication = {
 const Page = () => {
   const router = useRouter();
   const [state, setState] = useState<Authentication>(initialState);
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const changeValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -27,12 +30,15 @@ const Page = () => {
     e.preventDefault();
 
     try {
+      setIsLoading(true);
       const { data } = await axiosApi.post('users/sessions', state);
       localStorage.setItem('user', JSON.stringify(data));
 
       router.push('/');
     } catch (e) {
       // nothing
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -51,8 +57,12 @@ const Page = () => {
             Забыли пароль?
           </Link>
 
-          <button className={[auth_styles.submit_button, 'button-orange'].join(' ')} style={{ padding: '12px 80px' }}>
-            Войти
+          <button
+            className={[auth_styles.submit_button, 'button-orange'].join(' ')}
+            disabled={isLoading}
+            style={{ padding: isLoading ? '12px 70px' : '12px 80px' }}
+          >
+            {isLoading ? <Preloader color="#fff" scale={0.8} /> : 'Войти'}
           </button>
         </form>
       </div>

@@ -236,7 +236,7 @@
 }
 
 .wifi_password {
-  width: 170px;
+  width: 175px;
 }
 
 .menu_navigation {
@@ -311,6 +311,7 @@
   min-height: 1900px;
   padding: 23px 35px 60px;
 
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 44px;

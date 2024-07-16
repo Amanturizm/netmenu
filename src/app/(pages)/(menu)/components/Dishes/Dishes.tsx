@@ -104,8 +104,8 @@ const Dishes: React.FC<Props> = ({ categoryId, menu_id, groupName }) => {
           ))}
 
           {isLoading && (
-            <div style={{ transform: 'translateY(-90px)' }}>
-              <Preloader margin="0 410px" scale={1.3} color="#ff7c0d" />
+            <div style={{ position: 'absolute', top: 55, right: 50 }}>
+              <Preloader margin="0" scale={1.3} color="#ff7c0d" />
             </div>
           )}
         </div>
@@ -118,6 +118,10 @@ const Dishes: React.FC<Props> = ({ categoryId, menu_id, groupName }) => {
           menu_id={menu_id}
           switchToCreateCategoryModal={() => null}
           editableDish={editableDish}
+          updateData={() => {
+            setIsLoading(true);
+            void fetchDishes().finally(() => setIsLoading(false));
+          }}
         />
       )}
     </>

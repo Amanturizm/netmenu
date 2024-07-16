@@ -3,6 +3,7 @@ import React, { useLayoutEffect, useState } from 'react';
 import styles from './cabinet.module.css';
 import LogoutModal from '@/app/(pages)/(profile)/components/logout-modal/LogoutModal';
 import axiosApi from '@/app/axiosApi';
+import Preloader from '@/app/components/UI/Preloader/Preloader';
 
 interface Profile {
   username: string;
@@ -30,6 +31,9 @@ const Page = () => {
 
   const [isLogoutModal, setIsLogoutModal] = useState<boolean>(false);
 
+  const [profileIsLoading, setProfileIsLoading] = useState<boolean>(false);
+  const [passwordIsLoading, setPasswordIsLoading] = useState<boolean>(false);
+
   useLayoutEffect(() => {
     const user = JSON.parse(localStorage.getItem('user') as string);
     if (user && user.email) {
@@ -53,10 +57,13 @@ const Page = () => {
     e.preventDefault();
 
     try {
+      setProfileIsLoading(true);
       const { data } = await axiosApi.patch('users', profile);
       localStorage.setItem('user', JSON.stringify(data));
     } catch {
       // nothing
+    } finally {
+      setProfileIsLoading(false);
     }
   };
 
@@ -72,11 +79,14 @@ const Page = () => {
     }
 
     try {
+      setPasswordIsLoading(true);
       const { data } = await axiosApi.patch('users', password);
       localStorage.setItem('user', JSON.stringify(data));
       setPassword(initialPassword);
     } catch {
       // nothing
+    } finally {
+      setPasswordIsLoading(false);
     }
   };
 
@@ -94,7 +104,9 @@ const Page = () => {
           <p>Почта</p>
           <input type="email" name="email" value={profile.email} onChange={changeProfileValue} />
 
-          <button className={styles.save_button}>Сохранить изменения</button>
+          <button className={styles.save_button} disabled={profileIsLoading}>
+            {profileIsLoading ? <Preloader color="#fff" scale={0.8} margin="0" /> : 'Сохранить изменения'}
+          </button>
         </form>
 
         <form className={styles.card} onSubmit={changePassword}>
@@ -111,7 +123,9 @@ const Page = () => {
             onChange={changePasswordValue}
           />
 
-          <button className={styles.change_button}>Изменить пароль</button>
+          <button className={styles.change_button} disabled={passwordIsLoading}>
+            {passwordIsLoading ? <Preloader color="#fff" scale={0.8} margin="0" /> : 'Изменить пароль'}
+          </button>
         </form>
       </div>
 

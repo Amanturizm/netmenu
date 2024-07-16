@@ -18,6 +18,7 @@ import qrCodeIcon from '@/assets/images/qr-code.svg';
 import Dishes from '@/app/(pages)/(menu)/components/Dishes/Dishes';
 import Dish from '@/app/(pages)/(menu)/components/Dish/Dish';
 import QRCodeModal from '@/app/(pages)/(menu)/components/QRCodeModal/QRCodeModal';
+import Preloader from '@/app/components/UI/Preloader/Preloader';
 
 type State = Omit<IMenu, 'user' | '_id'>;
 
@@ -50,6 +51,8 @@ const Page = () => {
 
   const [query, setQuery] = useState<string>('');
   const [searchedDishes, setSearchedDishes] = useState<IDish[]>([]);
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [groupName, setGroupName] = useState<string>('');
 
@@ -322,8 +325,12 @@ const Page = () => {
               value={query}
               onChange={(e) => {
                 const { value } = e.target;
+
+                if (value === ' ') return;
                 setQuery(value);
-                void findDishForQuery(value);
+
+                setIsLoading(true);
+                void findDishForQuery(value).finally(() => setIsLoading(false));
               }}
             />
           </div>
@@ -358,6 +365,12 @@ const Page = () => {
             {searchedDishes.map((dish) => (
               <Dish dish={dish} key={dish._id} />
             ))}
+
+            {isLoading && (
+              <div style={{ position: 'absolute', top: 55, right: 50 }}>
+                <Preloader margin="0" scale={1.3} color="#ff7c0d" />
+              </div>
+            )}
           </div>
         ) : (
           !categoryId && <Main menu_id={menu_id} groupName={groupName} />

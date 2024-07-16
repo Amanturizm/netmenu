@@ -6,13 +6,16 @@ import styles from './CreateDishModal.module.css';
 import uploadImageIcon from '@/assets/images/upload-image.svg';
 import axiosApi from '@/app/axiosApi';
 import DeleteDishModal from '@/app/(pages)/(menu)/components/DeleteDishModal/DeleteDishModal';
+import Preloader from '@/app/components/UI/Preloader/Preloader';
 
 interface Props {
   hideModal: () => void;
   submitData(dish: IDish): Promise<void>;
   menu_id: string;
   switchToCreateCategoryModal: () => void;
+  updateData?: () => void;
   editableDish?: IDish;
+  setCategoriesForCreateDishIsLoading?: (bool: boolean) => void;
 }
 
 const initialState: IDish = {
@@ -39,7 +42,9 @@ const CreateDishModal: React.FC<Props> = ({
   submitData,
   menu_id,
   switchToCreateCategoryModal,
+  updateData,
   editableDish,
+  setCategoriesForCreateDishIsLoading,
 }) => {
   const [state, setState] = useState<IDish>(initialState);
 
@@ -49,12 +54,17 @@ const CreateDishModal: React.FC<Props> = ({
 
   const [isDeleteModal, setIsDeleteModal] = useState<boolean>(false);
 
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     if (categories.length) return;
 
     (async () => {
+      if (setCategoriesForCreateDishIsLoading) {
+        setCategoriesForCreateDishIsLoading(true);
+      }
       const { categories } = await fetchData(menu_id);
 
       if (categories.length) {
@@ -69,8 +79,11 @@ const CreateDishModal: React.FC<Props> = ({
       } else {
         switchToCreateCategoryModal();
       }
+      if (setCategoriesForCreateDishIsLoading) {
+        setCategoriesForCreateDishIsLoading(false);
+      }
     })();
-  }, [menu_id, categories, switchToCreateCategoryModal, editableDish]);
+  }, [menu_id, categories, switchToCreateCategoryModal, editableDish, setCategoriesForCreateDishIsLoading]);
 
   const formatNumericInput = (input: string): string => input.replace(/[^0-9]/g, '');
 
@@ -128,11 +141,13 @@ const CreateDishModal: React.FC<Props> = ({
     }
 
     try {
+      setIsLoading(true);
       await submitData(editableDish ? { ...editedState, _id: state._id } : state);
     } catch {
       // nothing
     } finally {
       hideModal();
+      setIsLoading(false);
     }
   };
 
@@ -291,11 +306,21 @@ const CreateDishModal: React.FC<Props> = ({
               Удалить
             </button>
           )}
-          <button className={styles.save_button}>Сохранить</button>
+
+          <button className={styles.save_button} disabled={isLoading}>
+            {isLoading ? <Preloader color="#fff" scale={0.7} /> : 'Сохранить'}
+          </button>
         </div>
       </form>
       {isDeleteModal && (
-        <DeleteDishModal dishId={state._id || ''} hideModal={() => setIsDeleteModal(false)} updateData={hideModal} />
+        <DeleteDishModal
+          dishId={state._id || ''}
+          hideModal={() => setIsDeleteModal(false)}
+          updateData={() => {
+            hideModal();
+            updateData!();
+          }}
+        />
       )}
     </>
   );

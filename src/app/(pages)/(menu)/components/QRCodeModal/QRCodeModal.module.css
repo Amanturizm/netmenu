@@ -30,7 +30,7 @@
   flex-direction: column;
   align-items: center;
 
-  animation: translateInBottom 100ms linear;
+  animation: translateInBottom 250ms linear;
 }
 
 @keyframes translateInBottom {

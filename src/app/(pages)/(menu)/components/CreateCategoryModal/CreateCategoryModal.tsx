@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { ICategory } from '@/app/(pages)/(menu)/types';
 import styles from './CreateCategoryModal.module.css';
 import uploadImageIcon from '@/assets/images/upload-image.svg';
+import Preloader from '@/app/components/UI/Preloader/Preloader';
 
 interface Props {
   hideModal: () => void;
@@ -20,6 +21,8 @@ const CreateCategoryModal: React.FC<Props> = ({ hideModal, submitData, editableC
   const [state, setState] = useState<ICategory>(initialState);
 
   const [isDragOver, setIsDragOver] = useState<boolean>(false);
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -60,11 +63,13 @@ const CreateCategoryModal: React.FC<Props> = ({ hideModal, submitData, editableC
     }
 
     try {
+      setIsLoading(true);
       await submitData(editableCategory ? { ...editedState, _id: state._id } : state);
     } catch {
       // nothing
     } finally {
       hideModal();
+      setIsLoading(false);
     }
   };
 
@@ -149,7 +154,7 @@ const CreateCategoryModal: React.FC<Props> = ({ hideModal, submitData, editableC
         </div>
 
         <div className={styles.save_button}>
-          <button>Сохранить</button>
+          <button disabled={isLoading}>{isLoading ? <Preloader color="#fff" scale={0.7} /> : 'Сохранить'}</button>
         </div>
       </form>
     </>

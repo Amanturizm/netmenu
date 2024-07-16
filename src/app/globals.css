@@ -28,6 +28,14 @@ button {
   width: min-content;
 }
 
+button:disabled {
+  cursor: not-allowed;
+}
+
+button div {
+  margin: 0 !important;
+}
+
 a {
   text-decoration: none;
   font-family: 'Montserrat Medium', sans-serif;
@@ -53,6 +61,11 @@ a {
 
 .button-orange:hover {
   background-color: #ffad69;
+}
+
+.button-orange:disabled {
+  background-color: #ffa050;
+  cursor: not-allowed;
 }
 
 .wrapper {
