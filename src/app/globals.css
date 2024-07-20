@@ -113,4 +113,10 @@ a {
     padding: 8px 50px !important;
     border-radius: 30px !important;
   }
+
+  .Main_mobile_backgraund__leb0I .wrapper {
+    padding: 33px 0 28px;
+    border-radius: 0;
+    position: static;
+  }
 }

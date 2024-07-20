@@ -50,9 +50,22 @@
     justify-content: center;
   }
 
+  .footer_contacts span {
+    font-size: 20px;
+    color: #ffa050;
+  }
+
+  .footer_contacts p {
+    font-size: 24px;
+  }
+
   .footer_contacts {
     align-items: center;
     margin-top: 2.9vh;
+  }
+
+  .footer_info p {
+    font-size: 16px;
   }
 
   .footer_info {

@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { Montserrat } from 'next/font/google';
 import styles from './Main.module.css';
@@ -11,6 +12,15 @@ import Link from 'next/link';
 const montserrat = Montserrat({ weight: ['400'], style: 'normal', subsets: ['latin'] });
 
 const Main = () => {
+  const carouselRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (carouselRef.current) {
+      const containerWidth = carouselRef.current.scrollWidth;
+      const viewportWidth = carouselRef.current.clientWidth;
+      carouselRef.current.scrollLeft = (containerWidth - viewportWidth) / 2;
+    }
+  }, []);
   return (
     <main>
       <section className="wrapper mobile_white_bg">
@@ -66,25 +76,29 @@ const Main = () => {
 
       <div className={styles.mobile_backgraund}>
         <section className={['wrapper', styles.section_two].join(' ')}>
-          <div className={styles.section_two_block}>
-            <h1>Удобство</h1>
-            <p>Работать с QR меню проще. Загружается меню быстрее. Полезной информации в меню больше.</p>
-          </div>
+          <div className={styles.carousel_wrapper}>
+            <div ref={carouselRef} className={styles.carousel_container}>
+              <div className={styles.section_two_block}>
+                <h1>Удобство</h1>
+                <p>Работать с QR меню проще. Загружается меню быстрее. Полезной информации в меню больше.</p>
+              </div>
 
-          <div className={styles.section_two_block}>
-            <h1>Безопасность</h1>
-            <p>
-              QR меню позволяет избежать физического контакта с бумажными меню и повышает уровень гигиены для
-              посетителей заведения
-            </p>
-          </div>
+              <div className={styles.section_two_block}>
+                <h1>Безопасность</h1>
+                <p>
+                  QR меню позволяет избежать физического контакта с бумажными меню и повышает уровень гигиены для
+                  посетителей заведения
+                </p>
+              </div>
 
-          <div className={styles.section_two_block}>
-            <h1>Экономичность</h1>
-            <p>
-              QR меню помогает сократить расходы на печать и обновление бумажных меню, что благоприятно сказывается на
-              окружающей среде.
-            </p>
+              <div className={styles.section_two_block}>
+                <h1>Экономичность</h1>
+                <p>
+                  QR меню помогает сократить расходы на печать и обновление бумажных меню,что благоприятно сказывается
+                  на окружающей среде.
+                </p>
+              </div>
+            </div>
           </div>
         </section>
       </div>
